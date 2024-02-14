@@ -19,8 +19,9 @@ builder.Services.AddTransient<IRepository<BookFormat>, FormatRepository>();
 
 builder.Services.AddDbContext<PostgresContext>(options => {
     options.UseNpgsql(
-        builder.Configuration["ConnectionStrings:BookCatalog"], 
-        builder => builder.UsePGroonga());
+        builder.Configuration["ConnectionStrings:BookCatalog"
+        ]);
+    options.EnableSensitiveDataLogging();
 });
 
 var app = builder.Build();

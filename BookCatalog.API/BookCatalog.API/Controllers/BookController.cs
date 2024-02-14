@@ -31,7 +31,7 @@ namespace BookCatalog.API.Controllers
                 pageSize
                 );
 
-            if (itemsOnPageQuery.Data == null || itemsOnPageQuery.Data.Count() > 0)
+            if (itemsOnPageQuery.Data == null || itemsOnPageQuery.Data.Count == 0)
             {
                 return NotFound("Books not found");
             }
@@ -75,7 +75,7 @@ namespace BookCatalog.API.Controllers
 
             var itemsOnPageQuery = await bookRepository.GetAllAsync(pageIndex, pageSize);
 
-            if (itemsOnPageQuery.Data == null || itemsOnPageQuery.Data.Count() > 0)
+            if (itemsOnPageQuery.Data == null || itemsOnPageQuery.Data.Count == 0)
             {
                 return NotFound("Books not found");
             }
@@ -122,7 +122,7 @@ namespace BookCatalog.API.Controllers
                 pageIndex, 
                 pageSize);
 
-            if (itemsOnPageQuery.Data == null || itemsOnPageQuery.Data.Count() > 0)
+            if (itemsOnPageQuery.Data == null || itemsOnPageQuery.Data.Count == 0)
             {
                 return NotFound("Books not found");
             }

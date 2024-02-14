@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tuanb\\Downloads\\.NET Core\\BookCatalog.API\\BookCatalog.API\\BookCatalog.API.csproj": {}
+    "C:\\Users\\tuanb\\Downloads\\.NET Core\\Bookstore\\BookCatalog.API\\BookCatalog.API\\BookCatalog.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tuanb\\Downloads\\.NET Core\\BookCatalog.API\\BookCatalog.API\\BookCatalog.API.csproj": {
+    "C:\\Users\\tuanb\\Downloads\\.NET Core\\Bookstore\\BookCatalog.API\\BookCatalog.API\\BookCatalog.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tuanb\\Downloads\\.NET Core\\BookCatalog.API\\BookCatalog.API\\BookCatalog.API.csproj",
+        "projectUniqueName": "C:\\Users\\tuanb\\Downloads\\.NET Core\\Bookstore\\BookCatalog.API\\BookCatalog.API\\BookCatalog.API.csproj",
         "projectName": "BookCatalog.API",
-        "projectPath": "C:\\Users\\tuanb\\Downloads\\.NET Core\\BookCatalog.API\\BookCatalog.API\\BookCatalog.API.csproj",
+        "projectPath": "C:\\Users\\tuanb\\Downloads\\.NET Core\\Bookstore\\BookCatalog.API\\BookCatalog.API\\BookCatalog.API.csproj",
         "packagesPath": "C:\\Users\\tuanb\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tuanb\\Downloads\\.NET Core\\BookCatalog.API\\BookCatalog.API\\obj\\",
+        "outputPath": "C:\\Users\\tuanb\\Downloads\\.NET Core\\Bookstore\\BookCatalog.API\\BookCatalog.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\tuanb\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -44,7 +44,7 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.1, )"
+              "version": "[8.0.2, )"
             },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
@@ -53,10 +53,6 @@
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[8.0.0, )"
-            },
-            "PGroonga.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[5.0.156632, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

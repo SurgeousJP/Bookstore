@@ -1,6 +1,6 @@
 ﻿namespace BookCatalog.API.Model
 {
-    public class PaginatedItems<TEntity>(int pageIndex, int pageSize, long totalItems, IEnumerable<TEntity> data) where TEntity : class
+    public class PaginatedItems<TEntity>(int pageIndex, int pageSize, long totalItems, ICollection<TEntity> data) where TEntity : class
     {
         public int PageIndex { get; } = pageIndex;
 
@@ -8,6 +8,6 @@
 
         public long TotalItems { get; } = totalItems;
 
-        public IEnumerable<TEntity> Data { get; } = data;
+        public ICollection<TEntity> Data { get; } = data;
     }
 }

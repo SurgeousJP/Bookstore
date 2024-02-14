@@ -39,6 +39,7 @@ public partial class PostgresContext : DbContext
             .HasPostgresExtension("extensions", "pgjwt")
             .HasPostgresExtension("extensions", "uuid-ossp")
             .HasPostgresExtension("graphql", "pg_graphql")
+            .HasPostgresExtension("pgroonga")
             .HasPostgresExtension("pgsodium", "pgsodium")
             .HasPostgresExtension("vault", "supabase_vault");
 

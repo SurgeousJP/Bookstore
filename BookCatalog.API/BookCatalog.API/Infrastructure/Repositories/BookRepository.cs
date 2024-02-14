@@ -22,10 +22,11 @@ namespace BookCatalog.API.Infrastructure.Repositories
             var query = context.Set<Book>().AsQueryable()
                 .Where(
                 b
-                => b.Title.SimilarSearch(searchWord)
-                || b.Description.SimilarSearch(searchWord)
-                || b.AuthorName.SimilarSearch(searchWord))
-                .OrderByDescending(g => EF.Functions.PgroongaScore());
+                => EF.Functions.ILike(b.Title, '%' + searchWord + '%')
+                || EF.Functions.ILike(b.Description, '%' + searchWord + '%')
+                || EF.Functions.ILike(b.AuthorName, '%' + searchWord + '%')
+                )
+                .OrderBy(b => b.Id);
 
             var totalItems = await query.LongCountAsync();
 
@@ -34,11 +35,13 @@ namespace BookCatalog.API.Infrastructure.Repositories
                 query = (IOrderedQueryable<Book>)query.Skip(pageIndex * pageSize).Take(pageSize);
             }
 
+            var itemsInPage = await query.ToListAsync();
+
             return new PaginatedItems<Book>(
-                pageIndex, 
-                pageSize, 
-                totalItems, 
-                await query.ToListAsync());
+                pageIndex,
+                pageSize,
+                totalItems,
+                itemsInPage);
         }
 
         public async override Task<PaginatedItems<Book>> FindAsync(
@@ -59,11 +62,13 @@ namespace BookCatalog.API.Infrastructure.Repositories
                 query = (IOrderedQueryable<Book>)query.Skip(pageIndex * pageSize).Take(pageSize);
             }
 
+            var itemsInPage = await query.ToListAsync();
+
             return new PaginatedItems<Book>(
                 pageIndex, 
                 pageSize, 
                 totalItems, 
-                await query.ToListAsync());
+                itemsInPage);
         }
 
         public override async Task<PaginatedItems<Book>> GetAllAsync(
@@ -71,8 +76,7 @@ namespace BookCatalog.API.Infrastructure.Repositories
             int pageSize = 0)
         {
             var query = context.Set<Book>().AsQueryable()
-                 .OrderBy(book => book.Id)
-                 ;
+                 .OrderBy(book => book.Id);
 
             var totalItems = await query.LongCountAsync();
 
@@ -82,7 +86,13 @@ namespace BookCatalog.API.Infrastructure.Repositories
                 query = (IOrderedQueryable<Book>)query.Skip(pageIndex * pageSize).Take(pageSize);
             }
 
-            return new PaginatedItems<Book>(pageIndex, pageSize, totalItems, await query.ToListAsync());
+            var itemsInPage = await query.ToListAsync();
+
+            return new PaginatedItems<Book>(
+                pageIndex, 
+                pageSize, 
+                totalItems, 
+                itemsInPage);
         }
     }
 }
