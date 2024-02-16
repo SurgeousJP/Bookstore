@@ -1,13 +1,15 @@
 ﻿using BookCatalog.API.Extensions;
 using BookCatalog.API.Infrastructure;
 using BookCatalog.API.Model;
+using BookCatalog.API.Queries.Mappers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq.Expressions;
 
 namespace BookCatalog.API.Repositories
 {
-    public class BookRepository : GenericRepository<Book>
+    public class BookRepository : GenericRepository<Book>, IRepository<Book>
     {
         public BookRepository(BookContext context) : base(context)
         {
@@ -105,6 +107,11 @@ namespace BookCatalog.API.Repositories
                     .ThenInclude(bg => bg.Genre);
 
             return await query.FirstOrDefaultAsync();
+        }
+
+        public override void Update(Book entity)
+        {
+            base.Update(entity);
         }
     }
 }

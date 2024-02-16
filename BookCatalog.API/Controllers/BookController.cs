@@ -132,33 +132,31 @@ namespace BookCatalog.API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateBookAsync([FromBody] CreateBookDTO bookInfo)
         {
-            Book book = BookMapper.ToBook(bookInfo);
-            foreach (var genre in bookInfo.Genres)
-            {
-                book.BookGenres.Add(new BookGenre { GenreId = genre.Id });
-            }
+            Book book = BookMapper.ToBookFromCreateBookDTO(bookInfo);
 
             await bookRepository.AddAsync(book);
             await bookRepository.SaveChangesAsync();
+
             return Ok(book);
         }
 
-        [HttpPut("update")]
+        [HttpPatch("update")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateBookAsync([FromBody] Book book)
+        public async Task<IActionResult> UpdateBookAsync([FromBody] BookDetailDTO book)
         {
             var existingBook = await bookRepository.GetItemByIdAsync(book.Id);
 
-            if (existingBook != null)
+            if (existingBook == null)
             {
                 return NotFound("Book for update not found");
             }
 
-            bookRepository.Update(book);
+            BookMapper.MapBookToBook(existingBook, BookMapper.ToBookFromBookDetailDTO(book));
+            
             await bookRepository.SaveChangesAsync();
-            return Ok(existingBook);
+            return Ok("Book updated successfully");
         }
 
         [HttpDelete("delete")]

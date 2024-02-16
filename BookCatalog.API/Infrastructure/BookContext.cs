@@ -143,7 +143,7 @@ public partial class BookContext : DbContext
 
             entity.HasOne(d => d.Book).WithMany(p => p.BookGenres)
                 .HasForeignKey(d => d.BookId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("book_genres_book_id_fkey");
 
             entity.HasOne(d => d.Genre).WithMany(p => p.BookGenres)

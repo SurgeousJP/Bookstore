@@ -52,7 +52,7 @@ namespace BookCatalog.API.Controllers
             return Ok(genre);
         }
 
-        [HttpPut("update")]
+        [HttpPatch("update")] 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
