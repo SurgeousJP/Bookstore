@@ -97,7 +97,7 @@ namespace BookCatalog.API.Repositories
                 itemsInPage);
         }
 
-        public override async Task<Book> GetItemByIdAsync(long id)
+        public override async Task<Book?> GetItemByIdAsync(long id)
         {
             var query = context.Set<Book>().AsQueryable()
                 .Where(book => book.Id == id)
@@ -109,9 +109,38 @@ namespace BookCatalog.API.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
-        public override void Update(Book entity)
+        public async override Task Update(Book updateBook)
         {
-            base.Update(entity);
+            var currentBook = await context.Set<Book>().AsQueryable()
+                .Where(book => book.Id == updateBook.Id)
+                .Include(book => book.BookGenres)
+                .FirstOrDefaultAsync();
+
+            if (currentBook == null)
+            {
+                throw new Exception("The book for update is not found");
+            }
+            else
+            {
+                BookMapper.MapBookToBook(currentBook, updateBook);
+                context.TryUpdateManyToMany(currentBook.BookGenres, updateBook.BookGenres, book => book.GenreId);
+            }
+        }
+
+        public async override Task Remove(Book removeBook)
+        {
+            var currentBook = await context.Set<Book>().AsQueryable()
+                .Where(book => book.Id == removeBook.Id)
+                .FirstOrDefaultAsync();
+
+            if (currentBook == null)
+            {
+                throw new Exception("The book for update is not found");
+            }
+            else
+            {
+                context.Remove(new Book { Id = removeBook.Id });
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using BookCatalog.API.Model;
+﻿using BookCatalog.API.Extensions;
+using BookCatalog.API.Model;
 using BookCatalog.API.Queries.DTOs;
 using System;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace BookCatalog.API.Queries.Mappers
@@ -30,13 +32,34 @@ namespace BookCatalog.API.Queries.Mappers
             descBook.FormatId = book.FormatId;
             descBook.AuthorName = book.AuthorName;
             descBook.PublisherId = book.PublisherId;
-            descBook.BookGenres.Clear();
-            foreach (var genre in book.BookGenres)
-            {
-                descBook.BookGenres.Add(new BookGenre { GenreId = genre.GenreId });
-            }
+            //descBook.BookGenres.Clear();
+            //foreach (var genre in book.BookGenres)
+            //{
+            //    descBook.BookGenres.Add(new BookGenre { GenreId = genre.GenreId });
+            //}
+            //var oldGenres = descBook.BookGenres.ToList();
+            //foreach (var newBookGenre in book.BookGenres)
+            //{
+            //    bool isNewBookGenre = false;
+            //    foreach (var oldBookGenre in oldGenres)
+            //    {
+            //        if (newBookGenre.GenreId == oldBookGenre.GenreId)
+            //        {
+            //            isNewBookGenre = true;
+            //            break;
+            //        }
+            //    }
+            //    if (isNewBookGenre)
+            //    {
+            //        descBook.BookGenres.Add(new BookGenre { GenreId = newBookGenre.GenreId});
+            //    }
+            //}
+
+
+            //// compare with new genrelist:
+            //// if new genre list don't have but old have => delete item
+            //// if new genre list have but old don't have => append item
         }
-        
         public static Book ToBookFromBookDetailDTO(BookDetailDTO book) => new Book
         {
             Id = book.Id,

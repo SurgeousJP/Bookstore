@@ -74,12 +74,12 @@ namespace BookCatalog.API.Repositories
             await context.SaveChangesAsync();
         }
 
-        public virtual void Update(T entity)
+        public virtual async Task Update(T entity)
         {
             context.Update(entity);
         }
 
-        public virtual void Remove(T entity)
+        public virtual async Task Remove(T entity)
         {
             context.Remove(entity);
         }

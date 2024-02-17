@@ -13,8 +13,8 @@ namespace BookCatalog.API.Repositories
             Expression<Func<T, bool>> predicate,
             int pageIndex = 0,
             int pageCount = 0);
-        void Update(T entity);
-        void Remove(T entity);
+        Task Update(T entity);
+        Task Remove(T entity);
         Task SaveChangesAsync();
         Task<long> LongCountAsync();
     }

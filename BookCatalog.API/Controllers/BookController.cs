@@ -137,7 +137,7 @@ namespace BookCatalog.API.Controllers
             await bookRepository.AddAsync(book);
             await bookRepository.SaveChangesAsync();
 
-            return Ok(book);
+            return Ok("Book created successfully");
         }
 
         [HttpPatch("update")]
@@ -146,17 +146,17 @@ namespace BookCatalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateBookAsync([FromBody] BookDetailDTO book)
         {
-            var existingBook = await bookRepository.GetItemByIdAsync(book.Id);
-
-            if (existingBook == null)
+            try
             {
-                return NotFound("Book for update not found");
+                await bookRepository.Update(BookMapper.ToBookFromBookDetailDTO(book));
+                await bookRepository.SaveChangesAsync();
+                return Ok("Book updated successfully");
             }
-
-            BookMapper.MapBookToBook(existingBook, BookMapper.ToBookFromBookDetailDTO(book));
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             
-            await bookRepository.SaveChangesAsync();
-            return Ok("Book updated successfully");
         }
 
         [HttpDelete("delete")]
@@ -165,17 +165,16 @@ namespace BookCatalog.API.Controllers
         [ProducesDefaultResponseType]
         public async Task<IActionResult> DeleteBookAsync([FromQuery] int id)
         {
-            var existingBook = await bookRepository.GetItemByIdAsync(id);
-
-            if (existingBook == null)
+            try
             {
-                return NotFound("Book for delete not found");
+                await bookRepository.Remove(new Book { Id = id });
+                await bookRepository.SaveChangesAsync();
+                return Ok("Book deleted");
             }
-
-            bookRepository.Remove(new Book { Id = id });
-            await bookRepository.SaveChangesAsync();
-
-            return Ok("Book deleted");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
