@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IRepository<Genre>, GenreRepository>();
 builder.Services.AddTransient<IRepository<Book>, BookRepository>();
 builder.Services.AddTransient<IRepository<BookFormat>, FormatRepository>();
+builder.Services.AddTransient<IRepository<BookPublisher>, PublisherRepository>();
 
 builder.Services.AddDbContext<BookContext>(options => {
     options.UseNpgsql(
