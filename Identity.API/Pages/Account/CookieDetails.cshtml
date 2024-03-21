@@ -1,0 +1,17 @@
+﻿@page "/account/details"
+@model Identity.API.Pages.Account.CookieDetailsModel
+@{
+    <table class="table table-sm table-bordered">
+        <tbody>
+            @if (Model.IdentityUser == null)
+            {
+                <tr><th class="text-center">No User</th></tr>
+            }
+            else
+            {
+                <tr><th>Name</th><td>@Model.IdentityUser.UserName</td></tr>
+                <tr><th>Email</th><td>@Model.IdentityUser.Email</td></tr>
+            }
+        </tbody>
+    </table>
+}

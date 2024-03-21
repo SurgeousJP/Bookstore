@@ -34,7 +34,7 @@ namespace Basket.API.Repositories
             return JsonSerializer.Deserialize(data.Span, BasketSerializationContext.Default.CustomerBasket);
         }
 
-        public async Task<CustomerBasket?> UpdateBasketAsnc(CustomerBasket basket)
+        public async Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket)
         {
             var json = JsonSerializer.SerializeToUtf8Bytes(basket, BasketSerializationContext.Default.CustomerBasket);
 
