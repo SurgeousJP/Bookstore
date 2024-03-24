@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.API", "Identity.AP
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{DC69F3F7-6129-4AFC-BCBD-C86E4D721542}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHost", "WebHost\WebHost.csproj", "{F2B40002-243A-4F61-8349-D482DEFB541C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DC69F3F7-6129-4AFC-BCBD-C86E4D721542}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC69F3F7-6129-4AFC-BCBD-C86E4D721542}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC69F3F7-6129-4AFC-BCBD-C86E4D721542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2B40002-243A-4F61-8349-D482DEFB541C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2B40002-243A-4F61-8349-D482DEFB541C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2B40002-243A-4F61-8349-D482DEFB541C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2B40002-243A-4F61-8349-D482DEFB541C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

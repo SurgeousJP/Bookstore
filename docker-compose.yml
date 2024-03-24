@@ -7,14 +7,13 @@ services:
       context: .
       dockerfile: Identity.API/Dockerfile
     ports:
-        - 5003:443 
+        - 5003:8081 
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_Kestrel__Certificates__Default__Password=SurgeousJP123
         - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
         - ~/.aspnet/https:/https:ro
-   
   bookcatalog.api:
     image: ${DOCKER_REGISTRY-}bookcatalogapi
     build:
@@ -23,14 +22,13 @@ services:
     depends_on:
         - identity.api
     ports:
-        - 5002:443
+        - 5002:8081
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_Kestrel__Certificates__Default__Password=SurgeousJP123
         - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
         - ~/.aspnet/https:/https:ro
-  
   basket.api:
     image: ${DOCKER_REGISTRY-}basketapi
     build:
@@ -39,7 +37,7 @@ services:
     depends_on:
         - identity.api
     ports:
-        - 5001:443
+        - 5001:8081
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_Kestrel__Certificates__Default__Password=SurgeousJP123
