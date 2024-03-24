@@ -31,5 +31,6 @@
   </PropertyGroup>
   <PropertyGroup>
 	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	<DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 </Project>

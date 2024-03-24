@@ -8,6 +8,7 @@
     <UserSecretsId>f94390a2-b8a2-4023-be99-0f4a4562c594</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,5 +20,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Basket.API\Basket.API.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	<DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
 
 </Project>
