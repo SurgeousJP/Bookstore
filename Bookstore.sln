@@ -13,6 +13,12 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHost", "WebHost\WebHost.csproj", "{F2B40002-243A-4F61-8349-D482DEFB541C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DD11AB8D-D872-4BFD-851F-53F686DC99D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E8F6ADFC-0D51-4213-AB28-EADC4379975B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{C6864A41-3A2B-4206-8627-7A50F96B49F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +48,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A99F8660-CED8-4E71-81EC-ECDC5A445ADD} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
+		{8DC43375-F30E-4201-B1A3-D338AD2E3A0B} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
+		{48D2C70D-74E4-4B1B-AC06-7B175C1509F6} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
+		{F2B40002-243A-4F61-8349-D482DEFB541C} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B9A548CF-CBBC-4F64-A88B-137FBB3A81DC}
