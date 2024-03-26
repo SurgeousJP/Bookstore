@@ -9,6 +9,7 @@ namespace Basket.API.gRPC
 {
     public class BasketService(IBasketRepository repository, ILogger<BasketService> logger) : Basket.BasketBase
     {
+        
         [AllowAnonymous]
         public override async Task<CustomerBasketResponse>
             GetBasket(GetBasketRequest request, ServerCallContext context)

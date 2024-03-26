@@ -1,8 +1,6 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 
 namespace Identity.API.Controllers
 {
@@ -12,11 +10,14 @@ namespace Identity.API.Controllers
     {
         private IProfileService profileService;
         private ILoginService<ApplicationUser> loginService;
+        private IJwtBuilder jwtBuilder;
 
-        public UserController(IProfileService profileService, ILoginService<ApplicationUser> loginService)
+        public UserController(IProfileService profileService, ILoginService<ApplicationUser> loginService,
+            IJwtBuilder jwtBuilder)
         {
             this.profileService = profileService;
             this.loginService = loginService;
+            this.jwtBuilder = jwtBuilder;
         }
 
         [HttpPost("login")]
@@ -43,8 +44,38 @@ namespace Identity.API.Controllers
                 return BadRequest("The password is incorrect, please try again");
             }
 
-            await loginService.SignIn(user);
-            return Ok($"The user {user.Id} is logged into the system");
+            //await loginService.SignIn(user);
+
+            var token = jwtBuilder.GetToken(user.Id);
+
+            return Ok(new
+            {
+                Message = $"The user {user.Id} is logged into the system",
+                Token = token
+            });
+        }
+
+        [HttpGet("validate")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Validate([FromQuery(Name = "username")] string username, [FromQuery(Name= "token")] string token)
+        {
+            var user = await loginService.FindByUsername(username);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var userId = jwtBuilder.ValidateToken(token);
+
+            if (userId != user.Id)
+            {
+                return BadRequest("Invalid token, please login again");
+            }
+
+            return Ok(userId);
         }
 
         [HttpGet("get/{userId}")]

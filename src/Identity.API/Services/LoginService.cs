@@ -29,7 +29,7 @@ namespace Identity.API.Services
         {
             var authProperties = new AuthenticationProperties
             {
-               ExpiresUtc = DateTimeOffset.UtcNow.AddDays(3),
+               ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60),
                IsPersistent = true,
                RedirectUri = "To be added later on"
             };
