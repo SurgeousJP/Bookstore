@@ -17,8 +17,12 @@ message CustomerBasketResponse{
 }
 
 message BasketItem {
-	int32 bookId = 2;
-	int32 quantity = 6;
+	int32 BookId = 2;
+	string Title = 3;
+	float UnitPrice = 4;
+	float OldUnitPrice = 5;
+	int32 Quantity = 6;
+	string ImageUrl = 7;
 }
 
 message UpdateBasketRequest {

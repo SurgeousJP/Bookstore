@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E8F6ADFC-0D51-4213-AB28-EADC4379975B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{C6864A41-3A2B-4206-8627-7A50F96B49F3}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Documents\Năm III - Học kỳ 2\Authentication JWT.png = ..\..\Documents\Năm III - Học kỳ 2\Authentication JWT.png
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHost", "src\WebHost\WebHost.csproj", "{D5A48B11-6068-4D80-B982-37A1E82AB122}"
 EndProject

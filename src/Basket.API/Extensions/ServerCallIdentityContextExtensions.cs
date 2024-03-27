@@ -8,7 +8,9 @@ namespace Basket.API.Extensions
     {
         public static string? GetUserIdentity(this ServerCallContext context)
         {
-            var jwtToken = context.GetHttpContext().Request.Headers["Authorization"];
+            
+            var bearer = context.GetHttpContext().Request.Headers["Authorization"].ToString();
+            var jwtToken = bearer.Replace("Bearer ", string.Empty);
 
             var jwtHandler = new JwtSecurityTokenHandler();
             var jwtSecurityToken = jwtHandler.ReadToken(jwtToken) as JwtSecurityToken;

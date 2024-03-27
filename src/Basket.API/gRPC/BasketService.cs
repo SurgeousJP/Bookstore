@@ -43,7 +43,7 @@ namespace Basket.API.gRPC
             }
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                logger.LogDebug("Begin UpdateBasket call from method {Method} for basket id {Id}", context.Method, userId);
+                logger.LogDebug("Begin UpdateBasket call for basket's userId {Id}", userId);
             }
             var customerBasket = MapToCustomerBasket(userId, request);
             var response = await repository.UpdateBasketAsync(customerBasket);
@@ -81,7 +81,11 @@ namespace Basket.API.gRPC
                 response.Items.Add(new BasketItem()
                 {
                     BookId = item.BookId,
-                    Quantity = item.Quantity
+                    Title = item.Title,
+                    UnitPrice =(float)item.UnitPrice,
+                    OldUnitPrice = (float)item.OldUnitPrice,
+                    Quantity = item.Quantity,
+                    ImageUrl = item.ImageUrl,
                 });
             }
             return response;
@@ -99,7 +103,11 @@ namespace Basket.API.gRPC
                 response.Items.Add(new()
                 {
                     BookId = item.BookId,
-                    Quantity = item.Quantity
+                    Title = item.Title,
+                    UnitPrice = (decimal)item.UnitPrice,
+                    OldUnitPrice = (decimal)item.OldUnitPrice,
+                    Quantity = item.Quantity,
+                    ImageUrl = item.ImageUrl,
                 });
             }
             
