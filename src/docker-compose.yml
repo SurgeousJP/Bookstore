@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Identity.API/Dockerfile
     ports:
-        - 5003:8081 
+        - 5001:8081 
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_Kestrel__Certificates__Default__Password=SurgeousJP123
@@ -37,17 +37,23 @@ services:
     depends_on:
         - identity.api
     ports:
-        - 5001:8081
+        - 5003:8081
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_Kestrel__Certificates__Default__Password=SurgeousJP123
         - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     volumes:
         - ~/.aspnet/https:/https:ro
-
   webhost:
     image: ${DOCKER_REGISTRY-}webhost
+    ports:
+        - 6001:8081
     build:
       context: .
       dockerfile: WebHost/Dockerfile
-
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=SurgeousJP123
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+        - ~/.aspnet/https:/https:ro

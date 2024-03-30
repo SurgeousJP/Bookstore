@@ -5,33 +5,82 @@
   },
   "Routes": [
     {
+      "SwaggerKey": "identity-api",
       "DownstreamPathTemplate": "/api/{version}/{everything}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity-api",
+          "Port": 8081
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{version}/identity/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "DELETE" ]
+    },
+
+    {
+      "SwaggerKey": "catalog-api",
+      "DownstreamPathTemplate": "/api/{version}/{everything}",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "catalog-api",
-          "Port": 80
+          "Port": 8081
         }
       ],
-      "UpstreamPathTemplate": "/api/{version}/c/{everything}",
-      "UpstreamHttpMethod": [ "POST", "PATCH", "GET" ]
+      "UpstreamPathTemplate": "/api/{version}/catalog/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "DELETE" ]
     },
+
     {
-      "DownstreamPathTemplate": "/api/{version}/{everything}",
-      "DownstreamScheme": "http",
+      "SwaggerKey": "basket-api",
+      "DownstreamPathTemplate": "/{service}/{**catchAll}",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "basket-api",
-          "Port": 80
+          "Port": 8081
         }
       ],
-      "UpstreamPathTemplate": "/api/{version}/b/{everything}",
-      "UpstreamHttpMethod": [ "POST", "PATCH", "GET" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "IdentityApiKey",
-        "AllowedScopes": []
-      }
-    }
+      "UpstreamPathTemplate": "/api/{service}/{**catchAll}",
+      "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "PUT", "DELETE" ],
 
+      //"AuthenticationOptions": {
+      //  "AuthenticationProviderKey": "JwtBearer",
+      //  "AllowedScopes": []
+      //}
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "identity-api",
+      "Config": [
+        {
+          "Name": "Identity API",
+          "Version": "v1",
+          "Url": "https://localhost:8081/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "catalog-api",
+      "Config": [
+        {
+          "Name": "Catalog API",
+          "Version": "v1",
+          "Url": "https://localhost:8081/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "basket-api",
+      "Config": [
+        {
+          "Name": "Basket API",
+          "Version": "v1",
+          "Url": "https://localhost:8081/swagger/v1/swagger.json"
+        }
+      ]
+    }
   ]
 }

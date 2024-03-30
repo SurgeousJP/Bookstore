@@ -16,3 +16,10 @@ Package required:
 	* Microsoft.AspNetCore.Authentication.JwtBearer
 	* System.IdentityModel.Tokens.Jwt 
 
+
+# Config API Gateway Ocelot with Swagger Gen
+Reference link: https://github.com/MatheusXavier/api-gateway-ocelot-sample
+Package required:
+	* MMLib.SwaggerForOcelot
+
+	
