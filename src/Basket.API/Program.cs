@@ -1,8 +1,5 @@
 using Basket.API.Extensions;
-using Basket.API.gRPC;
 using Basket.API.Middleware;
-using Grpc.Core;
-using Grpc.Net.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,15 +14,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.MapGrpcService<BasketService>();
-
 app.UseRouting();
-
 app.UseMiddleware<JwtMiddleware>(); // JWT Middleware
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
 

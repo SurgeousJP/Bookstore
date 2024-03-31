@@ -1,6 +1,3 @@
-using Basket.API.gRPC;
-using Grpc.Core;
-using Grpc.Net.Client;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -15,10 +12,11 @@ builder.Services.AddSwaggerForOcelot(builder.Configuration);
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-app.UseHttpsRedirection();
 app.UseSwaggerForOcelotUI(option =>
 {
     option.PathToSwaggerGenerator = "/swagger/docs";
 });
-await app.UseOcelot();
+app.UseOcelot().Wait();
+
+app.MapControllers();
 app.Run();

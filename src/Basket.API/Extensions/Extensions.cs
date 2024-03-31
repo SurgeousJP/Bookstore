@@ -1,7 +1,6 @@
 ﻿using Basket.API.Middleware;
 using Basket.API.Repositories;
 using Basket.API.Services;
-using Google.Api;
 using Identity.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -16,13 +15,10 @@ namespace Basket.API.Extensions
     {
         public static void AddApplicationServices(this IHostApplicationBuilder builder)
         {
-            builder.Services.AddGrpc();
-            builder.Services.AddGrpcSwagger();
-            builder.Services.AddGrpcReflection();
-
+            builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalog", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Basket", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -54,6 +50,7 @@ namespace Basket.API.Extensions
             builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
             builder.Services.AddJwtAuthentication(builder.Configuration);
             builder.Services.AddAuthorization();
+            builder.Services.AddControllers();
         }
 
         public static void AddJwtAuthentication

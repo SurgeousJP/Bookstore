@@ -6,49 +6,43 @@
   "Routes": [
     {
       "SwaggerKey": "identity-api",
-      "DownstreamPathTemplate": "/api/{version}/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-api",
-          "Port": 8081
+          "Host": "identity.api",
+          "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/{version}/identity/{everything}",
+      "UpstreamPathTemplate": "/api/v1/identity/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "DELETE" ]
     },
 
     {
       "SwaggerKey": "catalog-api",
-      "DownstreamPathTemplate": "/api/{version}/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "catalog-api",
-          "Port": 8081
+          "Host": "bookcatalog.api",
+          "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/{version}/catalog/{everything}",
+      "UpstreamPathTemplate": "/api/v1/catalog/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "DELETE" ]
     },
-
     {
       "SwaggerKey": "basket-api",
-      "DownstreamPathTemplate": "/{service}/{**catchAll}",
-      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "basket-api",
-          "Port": 8081
+          "Host": "basket.api",
+          "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/{service}/{**catchAll}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "PUT", "DELETE" ],
-
-      //"AuthenticationOptions": {
-      //  "AuthenticationProviderKey": "JwtBearer",
-      //  "AllowedScopes": []
-      //}
+      "UpstreamPathTemplate": "/api/v1/basket/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET", "DELETE" ]
     }
   ],
   "SwaggerEndPoints": [
@@ -58,7 +52,7 @@
         {
           "Name": "Identity API",
           "Version": "v1",
-          "Url": "https://localhost:8081/swagger/v1/swagger.json"
+          "Url": "http://identity.api:8080/swagger/v1/swagger.json"
         }
       ]
     },
@@ -68,7 +62,7 @@
         {
           "Name": "Catalog API",
           "Version": "v1",
-          "Url": "https://localhost:8081/swagger/v1/swagger.json"
+          "Url": "http://bookcatalog.api:8080/swagger/v1/swagger.json"
         }
       ]
     },
@@ -78,7 +72,7 @@
         {
           "Name": "Basket API",
           "Version": "v1",
-          "Url": "https://localhost:8081/swagger/v1/swagger.json"
+          "Url": "http://basket.api:8080/swagger/v1/swagger.json"
         }
       ]
     }

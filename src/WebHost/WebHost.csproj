@@ -19,10 +19,6 @@
     <PackageReference Include="Ocelot" Version="23.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Basket.API\Basket.API.csproj" />
-  </ItemGroup>
   <PropertyGroup>
 	<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
 	<DockerfileContext>..\..</DockerfileContext>
