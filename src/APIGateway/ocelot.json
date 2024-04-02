@@ -31,6 +31,7 @@
       "UpstreamPathTemplate": "/api/v1/catalog/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "DELETE" ]
     },
+
     {
       "SwaggerKey": "basket-api",
       "DownstreamPathTemplate": "/api/v1/{everything}",
@@ -41,7 +42,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/basket/{everything}",
+      "UpstreamPathTemplate": "/api/v1/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "DELETE" ]
     }
   ],

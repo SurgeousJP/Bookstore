@@ -1,5 +1,5 @@
 # Bookstore
-A Bookstore E-Commerce website based on Microservice Architecture
+A Bookstore E-Commerce website based on Microservice Architecture 
 
 
 # Create user cert for HTTPS:
@@ -11,15 +11,15 @@ https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view
 
 # JWT authentication:
 
-Reference link: https://www.codeproject.com/Articles/5370795/Microservices-using-ASP-NET-Core-8-Ocelot-MongoDB?fbclid=IwAR1bCfLmOKAHwe6eCp1-Cjl3yIx5FwtsbW8VFCxFTAtAD8iN4DyWAL5yx0E#identity-microservice
-Package required:
-	* Microsoft.AspNetCore.Authentication.JwtBearer
-	* System.IdentityModel.Tokens.Jwt 
+Reference link: https://www.codeproject.com/Articles/5370795/Microservices-using-ASP-NET-Core-8-Ocelot-MongoDB?fbclid=IwAR1bCfLmOKAHwe6eCp1-Cjl3yIx5FwtsbW8VFCxFTAtAD8iN4DyWAL5yx0E#identity-microservice<br/>
+Package required:<br/>
+	* Microsoft.AspNetCore.Authentication.JwtBearer<br/>
+	* System.IdentityModel.Tokens.Jwt<br/> 
 
 
 # Config API Gateway Ocelot with Swagger Gen
-Reference link: https://github.com/MatheusXavier/api-gateway-ocelot-sample
-Package required:
-	* MMLib.SwaggerForOcelot
+Reference link: https://github.com/MatheusXavier/api-gateway-ocelot-sample<br/>
+Package required:<br/>
+	* MMLib.SwaggerForOcelot<br/>
 
 	

@@ -33,10 +33,6 @@
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Basket.API\Basket.API.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
 	<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
 	<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>

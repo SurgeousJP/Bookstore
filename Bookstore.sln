@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{C6864A41-3A2
 		..\..\Documents\Năm III - Học kỳ 2\Authentication JWT.png = ..\..\Documents\Năm III - Học kỳ 2\Authentication JWT.png
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHost", "src\WebHost\WebHost.csproj", "{D5A48B11-6068-4D80-B982-37A1E82AB122}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookCatalog.API", "src\BookCatalog.API\BookCatalog.API.csproj", "{959957E5-0D16-42DF-B281-F3E1886E069C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.API", "src\Identity.API\Identity.API.csproj", "{46321BAA-09EB-4B96-BF9B-787B30E9E2AD}"
@@ -22,16 +20,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basket.API", "src\Basket.AP
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "src\docker-compose.dcproj", "{DC69F3F7-6129-4AFC-BCBD-C86E4D721542}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "src\APIGateway\APIGateway.csproj", "{9D16FC9B-98CC-4627-A0D9-3D7CCE326B57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D5A48B11-6068-4D80-B982-37A1E82AB122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5A48B11-6068-4D80-B982-37A1E82AB122}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5A48B11-6068-4D80-B982-37A1E82AB122}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5A48B11-6068-4D80-B982-37A1E82AB122}.Release|Any CPU.Build.0 = Release|Any CPU
 		{959957E5-0D16-42DF-B281-F3E1886E069C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{959957E5-0D16-42DF-B281-F3E1886E069C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{959957E5-0D16-42DF-B281-F3E1886E069C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,16 +44,20 @@ Global
 		{DC69F3F7-6129-4AFC-BCBD-C86E4D721542}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC69F3F7-6129-4AFC-BCBD-C86E4D721542}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC69F3F7-6129-4AFC-BCBD-C86E4D721542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D16FC9B-98CC-4627-A0D9-3D7CCE326B57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D16FC9B-98CC-4627-A0D9-3D7CCE326B57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D16FC9B-98CC-4627-A0D9-3D7CCE326B57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D16FC9B-98CC-4627-A0D9-3D7CCE326B57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D5A48B11-6068-4D80-B982-37A1E82AB122} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
 		{959957E5-0D16-42DF-B281-F3E1886E069C} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
 		{46321BAA-09EB-4B96-BF9B-787B30E9E2AD} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
 		{064D35B0-5236-47BC-86E4-73B54A2BED44} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
 		{DC69F3F7-6129-4AFC-BCBD-C86E4D721542} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
+		{9D16FC9B-98CC-4627-A0D9-3D7CCE326B57} = {DD11AB8D-D872-4BFD-851F-53F686DC99D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B9A548CF-CBBC-4F64-A88B-137FBB3A81DC}

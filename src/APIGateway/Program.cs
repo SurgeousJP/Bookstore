@@ -10,12 +10,13 @@ builder.Services.AddOcelot(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
+
 app.UseSwaggerForOcelotUI(option =>
 {
     option.PathToSwaggerGenerator = "/swagger/docs";
 });
+app.UseHttpsRedirection();
 app.UseOcelot().Wait();
 
 app.MapControllers();

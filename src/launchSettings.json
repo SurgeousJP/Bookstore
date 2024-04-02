@@ -7,7 +7,8 @@
         "identity.api": "StartDebugging",
         "bookcatalog.api": "StartDebugging",
         "basket.api": "StartDebugging",
-        "webhost": "StartDebugging"
+        "webhost": "StartDebugging",
+        "apigateway": "StartDebugging"
       }
     }
   }
