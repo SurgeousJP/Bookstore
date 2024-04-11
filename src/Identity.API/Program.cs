@@ -25,7 +25,7 @@ builder.Services.Configure<IdentityOptions>(opts =>
     opts.Password.RequireDigit = true;
 
     opts.User.RequireUniqueEmail = true;
-    opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
 });
 
 builder.Services.AddDbContext<IdentityContext>(opts =>

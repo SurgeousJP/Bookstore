@@ -25,6 +25,11 @@ namespace Identity.API.Services
             return _userManager.CheckPasswordAsync(user, password);
         }
 
+        public async Task SignOut()
+        {
+            await _signInManager.SignOutAsync();
+        }
+
         public async Task SignIn(ApplicationUser user)
         {
             var authProperties = new AuthenticationProperties

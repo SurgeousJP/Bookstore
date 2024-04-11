@@ -11,5 +11,7 @@ namespace Identity.API.Services
         Task SignIn(T user);
 
         Task SignInAsync(T user, AuthenticationProperties properties, string authenticationMethod = null);
+
+        Task SignOut();
     }
 }

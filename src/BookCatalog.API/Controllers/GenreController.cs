@@ -2,12 +2,14 @@
 using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
 using BookCatalog.API.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookCatalog.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize(Roles="Admin")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class GenreController : ControllerBase
     {
@@ -18,6 +20,7 @@ namespace BookCatalog.API.Controllers
             this.genreRepository = genreRepository;
         }
 
+        [AllowAnonymous]
         [HttpGet("items")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]

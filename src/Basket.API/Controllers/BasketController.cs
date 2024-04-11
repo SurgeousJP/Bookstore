@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Basket.API.Model;
-using Basket.API.gRPC;
 using Basket.API.Repositories;
 using Basket.API.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Basket.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize]
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository basketRepository;
@@ -18,6 +17,7 @@ namespace Basket.API.Controllers
             this.basketRepository = basketRepository;
         }
 
+        [AllowAnonymous]
         [HttpGet("get/{userId}")]
         public async Task<IActionResult> GetBasket([FromRoute] string userId)
         {

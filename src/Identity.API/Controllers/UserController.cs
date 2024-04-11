@@ -1,6 +1,8 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Identity.API.Controllers
 {
@@ -55,6 +57,14 @@ namespace Identity.API.Controllers
             });
         }
 
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutUser()
+        {
+            await loginService.SignOut();
+            return Ok("The user has logged out successfully");
+        }
+
         [HttpGet("validate")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -78,6 +88,32 @@ namespace Identity.API.Controllers
             return Ok(userId);
         }
 
+        [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> CreateUser([FromBody] UserRegisterDTO user)
+        {
+            if (user == null)
+            {
+                return BadRequest("User data not valid or empty");
+            }
+
+            var applicationUser = new ApplicationUser
+            {
+                UserName = user.Username,
+                Email = user.Email,
+            };
+
+            var userId = await profileService.CreateUserAsync(applicationUser, user.Password);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Something wrong with creating user, please try again");
+            }
+            return Ok($"User with {user.Username} has been created, with userId: {userId}");
+        }
+
+        [Authorize]
         [HttpGet("get/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -92,6 +128,7 @@ namespace Identity.API.Controllers
             return Ok(userProfile);
         }
 
+        [Authorize]
         [HttpPatch("update/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -111,6 +148,28 @@ namespace Identity.API.Controllers
             }
 
             return Ok(updateIdentityResult);
+        }
+
+        [Authorize(Roles="Admin")]
+        [HttpDelete("delete/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> DeleteUserProfile([FromRoute] string userId)
+        {
+            var identityResult = await profileService.DeleteUserProfileAsync(userId);
+
+            if (!identityResult.Succeeded)
+            {
+                string errorString = "";
+                foreach (var error in identityResult.Errors)
+                {
+                    errorString = errorString + error + "\n";
+                }
+                return BadRequest($"User delete failed, error: {errorString}");
+            }
+
+            return Ok(identityResult);
         }
     }
 }

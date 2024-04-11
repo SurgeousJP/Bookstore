@@ -1,5 +1,6 @@
 using BookCatalog.API.Extensions;
 using BookCatalog.API.Infrastructure;
+using BookCatalog.API.Middleware;
 using BookCatalog.API.Model;
 using BookCatalog.API.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<JwtMiddleware>();
 
 //app.UseHttpsRedirection();
 

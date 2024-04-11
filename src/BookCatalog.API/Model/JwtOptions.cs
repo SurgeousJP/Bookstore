@@ -1,4 +1,4 @@
-﻿namespace Identity.API.Models
+﻿namespace BookCatalog.API.Model
 {
     public class JwtOptions
     {

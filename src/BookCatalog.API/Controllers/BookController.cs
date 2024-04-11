@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BookCatalog.API.Repositories;
 using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookCatalog.API.Controllers
 {
@@ -129,6 +130,7 @@ namespace BookCatalog.API.Controllers
             return Ok(BookMapper.ToBookDetailDTO(book));
         }
 
+        [Authorize(Roles="Admin")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateBookAsync([FromBody] CreateBookDTO bookInfo)
         {
@@ -140,6 +142,7 @@ namespace BookCatalog.API.Controllers
             return Ok("Book created successfully");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("update")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -159,6 +162,7 @@ namespace BookCatalog.API.Controllers
             
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
