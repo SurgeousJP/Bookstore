@@ -25,7 +25,7 @@ namespace Basket.API.Extensions
                     In = ParameterLocation.Header,
                     Description = "Please insert JWT token with the prefix Bearer into field",
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT"
                 });
