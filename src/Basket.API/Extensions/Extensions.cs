@@ -16,6 +16,7 @@ namespace Basket.API.Extensions
         public static void AddApplicationServices(this IHostApplicationBuilder builder)
         {
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
+            builder.Services.AddJwtAuthentication(builder.Configuration);
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Basket", Version = "v1" });
@@ -25,7 +26,7 @@ namespace Basket.API.Extensions
                     Description = "Please insert JWT token with the prefix Bearer into field",
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "bearer",
+                    Scheme = "Bearer",
                     BearerFormat = "JWT"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement {
@@ -48,7 +49,7 @@ namespace Basket.API.Extensions
 
             builder.Services.AddSingleton(redisServer);
             builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
-            builder.Services.AddJwtAuthentication(builder.Configuration);
+            
             builder.Services.AddAuthorization();
             builder.Services.AddControllers();
         }

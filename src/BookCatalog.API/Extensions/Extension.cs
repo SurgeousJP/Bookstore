@@ -32,7 +32,7 @@ namespace BookCatalog.API.Extensions
                     Description = "Please insert JWT token with the prefix Bearer into field",
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "bearer",
+                    Scheme = "Bearer",
                     BearerFormat = "JWT"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement {

@@ -42,7 +42,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/{everything}",
+      "UpstreamPathTemplate": "/api/v1/basket/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "DELETE" ]
     }
   ],
