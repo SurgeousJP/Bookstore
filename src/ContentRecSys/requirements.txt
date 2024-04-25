@@ -1,0 +1,12 @@
+supabase==2.4.3
+supafunc==0.4.5
+Flask==2.2.2
+Werkzeug==2.2.2
+flask-ngrok==0.0.25
+waitress==3.0.0
+scikit-image==0.19.2
+scikit-learn==1.0.2
+scipy==1.7.3
+pandas==1.4.2
+numpy==1.21.5
+numpydoc==1.2

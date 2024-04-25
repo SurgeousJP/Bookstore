@@ -5,6 +5,19 @@
   },
   "Routes": [
     {
+      "SwaggerKey": "contentrecsys",
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "contentrecsys",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
       "SwaggerKey": "identity-api",
       "DownstreamPathTemplate": "/api/v1/{everything}",
       "DownstreamScheme": "http",

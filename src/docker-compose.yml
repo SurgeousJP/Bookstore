@@ -57,3 +57,15 @@ services:
       dockerfile: src/APIGateway/Dockerfile
     networks:
         - backend
+
+  contentrecsys:
+    image: ${DOCKER_REGISTRY-}contentrecsys
+    container_name: contentrecsys
+    ports:
+        - 5004:8080
+    build:
+      context: ..\src\ContentRecSys
+      dockerfile: Dockerfile
+    networks:
+        - backend
+

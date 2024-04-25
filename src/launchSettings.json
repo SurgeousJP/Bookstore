@@ -8,7 +8,8 @@
         "bookcatalog.api": "StartDebugging",
         "basket.api": "StartDebugging",
         "webhost": "StartDebugging",
-        "apigateway": "StartDebugging"
+        "apigateway": "StartDebugging",
+        "contentrecsys": "StartDebugging"
       }
     }
   }
