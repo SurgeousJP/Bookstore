@@ -129,6 +129,9 @@ from flask_ngrok import run_with_ngrok
 app = Flask(__name__)
 run_with_ngrok(app)  # Start ngrok when app is run
 
+def get_title(id):
+    return books_df[books_df['id'] == id]['title'].values[0]
+
 import json
 @app.route('/predict/<int:id>', methods=['GET'])
 def predict(id):
@@ -136,6 +139,17 @@ def predict(id):
     print(title)
     prediction_result = [int(x) for x in get_top_five_recommendations(title)]
     return json.dumps(prediction_result)
+
+@app.route('/predict_with_title/<int:id>', methods=['GET'])
+def predict_with_title(id):
+    title = get_title(id)
+    print(title)
+    prediction_result = [get_title(int(x)) for x in get_top_five_recommendations(title)]
+    response = {
+        'title': title,
+        'recommendations': prediction_result
+    }
+    return jsonify(response)
 
 from waitress import serve
 
