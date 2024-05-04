@@ -2,6 +2,7 @@
 using Basket.API.Repositories;
 using Basket.API.Services;
 using Identity.API.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -52,6 +53,12 @@ namespace Basket.API.Extensions
             
             builder.Services.AddAuthorization();
             builder.Services.AddControllers();
+
+            builder.Services.AddMassTransit(config => {
+                config.UsingRabbitMq((ctx, cfg) => {
+                    cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+                });
+            });
         }
 
         public static void AddJwtAuthentication

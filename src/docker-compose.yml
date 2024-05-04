@@ -27,6 +27,7 @@ services:
       dockerfile: BookCatalog.API/Dockerfile
     depends_on:
         - identity.api
+        - rabbitmq 
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
     networks:
@@ -34,7 +35,7 @@ services:
 
   basket.api:
     ports:
-    - 5003:8080
+        - 5003:8080
     image: ${DOCKER_REGISTRY-}basketapi
     container_name: basket.api
     build:
@@ -42,6 +43,7 @@ services:
       dockerfile: Basket.API/Dockerfile
     depends_on:
         - identity.api
+        - rabbitmq
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
     networks:
@@ -69,3 +71,21 @@ services:
     networks:
         - backend
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    networks:
+        - backend
+
+  ordering.api:
+    image: ${DOCKER_REGISTRY-}orderingapi
+    container_name: ordering.api
+    ports:
+        - 5005:8080
+    build:
+      context: ..
+      dockerfile: src/Ordering.API/Dockerfile
+    networks:
+        - backend
+    depends_on:
+        - rabbitmq
+        - identity.api

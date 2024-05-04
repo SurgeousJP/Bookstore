@@ -9,7 +9,8 @@
         "basket.api": "StartDebugging",
         "webhost": "StartDebugging",
         "apigateway": "StartDebugging",
-        "contentrecsys": "StartDebugging"
+        "contentrecsys": "StartDebugging",
+        "ordering.api": "StartDebugging"
       }
     }
   }

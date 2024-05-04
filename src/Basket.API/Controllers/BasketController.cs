@@ -2,6 +2,9 @@
 using Basket.API.Repositories;
 using Basket.API.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using MassTransit;
+using AutoMapper;
+using EventBus.Messaging.Events;
 
 namespace Basket.API.Controllers
 {
@@ -12,9 +15,13 @@ namespace Basket.API.Controllers
     {
         private readonly IBasketRepository basketRepository;
 
-        public BasketController(IBasketRepository basketRepository)
+        private readonly IPublishEndpoint publishEndpoint;
+
+        public BasketController(IBasketRepository basketRepository, IPublishEndpoint publishEndpoint)
         {
-            this.basketRepository = basketRepository;
+            this.basketRepository = basketRepository ?? throw new ArgumentNullException(nameof(basketRepository));
+
+            this.publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         }
 
         [AllowAnonymous]
@@ -58,6 +65,25 @@ namespace Basket.API.Controllers
         {
             await basketRepository.DeleteBasketAsync(userId);
             return Ok("Basket deleted successfully");
+        }
+
+        [HttpPost("checkout/{userId}")]
+        public async Task<IActionResult> Checkout([FromRoute] string userId)
+        {
+            var basket = await basketRepository.GetBasketAsync(userId);
+
+            if (basket == null)
+            {
+                return BadRequest("Customer basket not found !");
+            }
+
+            var eventMessage = ModelMapper.MapToBasketCheckoutEvent(userId, basket.Items);
+
+            await publishEndpoint.Publish(eventMessage);
+
+            await basketRepository.DeleteBasketAsync(userId);
+
+            return Accepted("Order is being created");
         }
     }
 }

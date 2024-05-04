@@ -1,9 +1,11 @@
 ﻿using BookCatalog.API.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Ordering.API.EventBusConsumer;
 using Ordering.API.Infrastructure;
 using Ordering.API.Middleware;
 using Ordering.API.Model;
@@ -26,7 +28,7 @@ namespace Ordering.API.Extensions
             // Swagger genereator
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Order", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ordering", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -60,6 +62,20 @@ namespace Ordering.API.Extensions
                     builder.Configuration["ConnectionStrings:Ordering"
                     ]);
                 options.EnableSensitiveDataLogging();
+            });
+
+            builder.Services.AddMassTransit(config =>
+            {
+                config.AddConsumer<BasketCheckoutConsumer>();
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+
+                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.BasketCheckoutQueue, c =>
+                    {
+                        c.ConfigureConsumer<BasketCheckoutConsumer>(ctx);
+                    });
+                });
             });
         }
 

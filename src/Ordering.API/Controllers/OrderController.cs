@@ -1,4 +1,5 @@
 ﻿using BookCatalog.API.Queries.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.API.Model;
 using Ordering.API.Models.DTOs;
@@ -6,7 +7,8 @@ using Ordering.API.Repositories;
 
 namespace Ordering.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
+    [Authorize]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -19,7 +21,7 @@ namespace Ordering.API.Controllers
             _orderRepository = orderRepository;
         }
 
-        [HttpGet("/order/{id}")]
+        [HttpGet("order/{orderId}")]
         public async Task<IActionResult> GetOrderByIdAsync([FromRoute] int orderId)
         {
             var order = await _orderRepository.GetOrderAsync(orderId);
@@ -31,7 +33,7 @@ namespace Ordering.API.Controllers
             
             return Ok(OrderMapper.ToOrderDetailDTO(order));
         }
-        [HttpGet("/orders/{userId}")]
+        [HttpGet("orders/{userId}")]
         public async Task<IActionResult> GetOrdersFromBuyerAsync([FromRoute] Guid buyerId, [FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
         {
             var orders = await _orderRepository.GetOrdersFromUserAsync(buyerId, pageIndex, pageSize);
@@ -50,7 +52,7 @@ namespace Ordering.API.Controllers
                 .ToList()));
         }
 
-        [HttpGet("/orders")]
+        [HttpGet("orders")]
         public async Task<IActionResult> GetOrdersAsync([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
         {
             var orders = await _orderRepository.GetOrders(pageIndex, pageSize);
@@ -69,7 +71,7 @@ namespace Ordering.API.Controllers
                 .ToList()));
         }
 
-        [HttpGet("/cardtypes")]
+        [HttpGet("cardtypes")]
         public async Task<IActionResult> GetCardTypesAsync()
         {
             var cardTypes = await _buyerRepository.GetAllCardTypes();
@@ -84,22 +86,18 @@ namespace Ordering.API.Controllers
         //[HttpPost("/create-order")]
         //public Task<IActionResult> CreateOrderFromBasket();
 
-        // public Task<IActionResult> CheckStockForOrder();
-
         //[HttpPatch("/ship-order")]
         //public Task<IActionResult> ShipOrderAsync();
 
-        [HttpPatch("/cancel-order")]
-        public async Task<IActionResult> CancelOrderAsync([FromQuery] int orderId, [FromQuery] Guid buyerId)
-        {
-            var orderForUpdate = await _orderRepository.GetOrdersFromUserAsync(buyerId, 0, 1);
+        //[HttpPatch("/cancel-order")]
+        //public async Task<IActionResult> CancelOrderAsync([FromQuery] int orderId, [FromQuery] Guid buyerId)
+        //{
+        //    var orderForUpdate = await _orderRepository.GetOrdersFromUserAsync(buyerId, 0, 1);
 
-            if (orderForUpdate.Data == null || orderForUpdate.Data.Count == 0)
-            {
-                return NotFound("Order not found for cancel");
-            }
-
-            orderForUpdate.Data[0].
-        }
+        //    if (orderForUpdate.Data == null || orderForUpdate.Data.Count == 0)
+        //    {
+        //        return NotFound("Order not found for cancel");
+        //    }
+        //}
     }
 }

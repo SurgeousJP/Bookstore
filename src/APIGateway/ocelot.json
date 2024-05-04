@@ -57,6 +57,20 @@
       ],
       "UpstreamPathTemplate": "/api/v1/basket/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "DELETE" ]
+    },
+
+    {
+      "SwaggerKey": "ordering-api",
+      "DownstreamPathTemplate": "/api/v1/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ordering.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/ordering/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET", "DELETE", "PATCH" ]
     }
   ],
   "SwaggerEndPoints": [
@@ -87,6 +101,16 @@
           "Name": "Basket API",
           "Version": "v1",
           "Url": "http://basket.api:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "ordering-api",
+      "Config": [
+        {
+          "Name": "Ordering API",
+          "Version": "v1",
+          "Url": "http://ordering.api:8080/swagger/v1/swagger.json"
         }
       ]
     }
