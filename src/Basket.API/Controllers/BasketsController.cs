@@ -9,13 +9,13 @@ namespace Basket.API.Controllers
     [Route("api/v1/[controller]")]
     [ApiController]
     [Authorize]
-    public class BasketController : ControllerBase
+    public class BasketsController : ControllerBase
     {
         private readonly IBasketRepository basketRepository;
         private readonly IPublishEndpoint publishEndpoint;
-        private readonly ILogger<BasketController> logger; // Inject ILogger
+        private readonly ILogger<BasketsController> logger; // Inject ILogger
 
-        public BasketController(IBasketRepository basketRepository, IPublishEndpoint publishEndpoint, ILogger<BasketController> logger)
+        public BasketsController(IBasketRepository basketRepository, IPublishEndpoint publishEndpoint, ILogger<BasketsController> logger)
         {
             this.basketRepository = basketRepository ?? throw new ArgumentNullException(nameof(basketRepository));
             this.publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
@@ -23,7 +23,7 @@ namespace Basket.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("get/{userId}")]
+        [HttpGet("{userId}")]
         public async Task<IActionResult> GetBasket([FromRoute] string userId)
         {
             if (userId == null ||  userId.Length == 0)
@@ -39,7 +39,7 @@ namespace Basket.API.Controllers
             return Ok("No basket found");
         }
 
-        [HttpPost("update/{userId}")]
+        [HttpPost("{userId}")]
         public async Task<IActionResult> UpdateBasket([FromRoute] string userId, [FromBody] List<Model.BasketItem> basketItems)
         {
             var customerBasket = ModelMapper.MapToCustomerBasket(userId, basketItems);
@@ -58,7 +58,7 @@ namespace Basket.API.Controllers
             }
         }
 
-        [HttpDelete("delete/{userId}")]
+        [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteBasket(string userId)
         {
             await basketRepository.DeleteBasketAsync(userId);

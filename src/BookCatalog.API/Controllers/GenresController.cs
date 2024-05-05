@@ -11,17 +11,17 @@ namespace BookCatalog.API.Controllers
     [Authorize(Roles="Admin")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class GenreController : ControllerBase
+    public class GenresController : ControllerBase
     {
         private IRepository<Genre> genreRepository;
 
-        public GenreController(IRepository<Genre> genreRepository)
+        public GenresController(IRepository<Genre> genreRepository)
         {
             this.genreRepository = genreRepository;
         }
 
         [AllowAnonymous]
-        [HttpGet("items")]
+        [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -38,14 +38,15 @@ namespace BookCatalog.API.Controllers
             }
             else
             {
-                return Ok(new {
-                    totalGenres = totalGenres,
-                    genres = genresInPage
-                });
+                return Ok(new PaginatedItems<Genre>(
+                    genresInPage.PageIndex,
+                    genresInPage.PageSize,
+                    genresInPage.TotalItems,
+                    genresInPage.Data));
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost("")]
         public async Task<IActionResult> CreateGenreAsync([FromBody] CreateGenreDTO createGenre)
         {
             Genre genre = BookMapper.ToGenre(createGenre);
@@ -55,7 +56,7 @@ namespace BookCatalog.API.Controllers
             return Ok(genre);
         }
 
-        [HttpPatch("update")] 
+        [HttpPatch("")] 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -68,13 +69,13 @@ namespace BookCatalog.API.Controllers
                 return NotFound("Genre not found update");
             }
 
-            genreRepository.Update(updateGenre);
+            await genreRepository.Update(updateGenre);
             await genreRepository.SaveChangesAsync();
 
             return Ok("Genre updated successfully");
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -87,7 +88,7 @@ namespace BookCatalog.API.Controllers
                 return NotFound("Genre not found for delete");
             }
 
-            genreRepository.Remove(new Genre { Id = id });
+            await genreRepository.Remove(new Genre { Id = id });
 
             return Ok("Genre deleted successfully");
         }

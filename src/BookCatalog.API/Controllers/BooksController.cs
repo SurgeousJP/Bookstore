@@ -11,27 +11,27 @@ namespace BookCatalog.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class BookController : ControllerBase
+    public class BooksController : ControllerBase
     {
         private IRepository<Book> bookRepository;
         private readonly IPublishEndpoint publishEndpoint;
-        private readonly ILogger<BookController> logger; // Inject ILogger
+        private readonly ILogger<BooksController> logger; // Inject ILogger
 
-        public BookController(IRepository<Book> bookRepository, IPublishEndpoint publishEndpoint, ILogger<BookController> logger)
+        public BooksController(IRepository<Book> bookRepository, IPublishEndpoint publishEndpoint, ILogger<BooksController> logger)
         {
             this.bookRepository = bookRepository;
             this.publishEndpoint = publishEndpoint;
             this.logger = logger;
         }
 
-        [HttpGet("search_query")]
+        [HttpGet("search")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> SearchBookAsync(
             [FromQuery] string searchWord,
-            [FromQuery] int pageSize = 10,
-            [FromQuery] int pageIndex = 0)
+            [FromQuery] int pageIndex = 0,
+            [FromQuery] int pageSize = 10)
         {
             var itemsOnPageQuery = await bookRepository.SearchAsync(
                 searchWord,
@@ -55,7 +55,7 @@ namespace BookCatalog.API.Controllers
             }
         }
 
-        [HttpGet("items")]
+        [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
@@ -84,7 +84,7 @@ namespace BookCatalog.API.Controllers
             }
         }
 
-        [HttpGet("items/filter")]
+        [HttpGet("filter")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -94,7 +94,6 @@ namespace BookCatalog.API.Controllers
             [FromQuery] int pageSize = 10
             )
         {      
-
             var itemsOnPageQuery = await bookRepository.FindAsync(
                BookFilter.BuildFilterPredicate(filter),
                 pageIndex, 
@@ -115,7 +114,7 @@ namespace BookCatalog.API.Controllers
             }
         }
 
-        [HttpGet("item/{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -136,8 +135,8 @@ namespace BookCatalog.API.Controllers
             return Ok(BookMapper.ToBookDetailDTO(book));
         }
 
-        [Authorize(Roles="Admin")]
-        [HttpPost("create")]
+        //[Authorize(Roles="Admin")]
+        [HttpPost("")]
         public async Task<IActionResult> CreateBookAsync([FromBody] CreateBookDTO bookInfo)
         {
             Book book = BookMapper.ToBookFromCreateBookDTO(bookInfo);
@@ -150,7 +149,7 @@ namespace BookCatalog.API.Controllers
 
         //[Authorize(Roles = "Admin")]
         [Authorize]
-        [HttpPatch("update")]
+        [HttpPatch("")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -192,7 +191,7 @@ namespace BookCatalog.API.Controllers
 
         //[Authorize(Roles = "Admin")]
         [Authorize]
-        [HttpDelete("delete")]
+        [HttpDelete("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]

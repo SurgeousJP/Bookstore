@@ -10,18 +10,18 @@ namespace Ordering.API.Controllers
     [Route("api/v1/[controller]")]
     [Authorize]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly IBuyerRepository _buyerRepository;
         private readonly IOrderRepository _orderRepository;
 
-        public OrderController(IBuyerRepository buyerRepository, IOrderRepository orderRepository)
+        public OrdersController(IBuyerRepository buyerRepository, IOrderRepository orderRepository)
         {
             _buyerRepository = buyerRepository;
             _orderRepository = orderRepository;
         }
 
-        [HttpGet("order/{orderId}")]
+        [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrderByIdAsync([FromRoute] int orderId)
         {
             var order = await _orderRepository.GetOrderAsync(orderId);
@@ -33,7 +33,7 @@ namespace Ordering.API.Controllers
             
             return Ok(OrderMapper.ToOrderDetailDTO(order));
         }
-        [HttpGet("orders/{userId}")]
+        [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetOrdersFromBuyerAsync([FromRoute] Guid buyerId, [FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
         {
             var orders = await _orderRepository.GetOrdersFromUserAsync(buyerId, pageIndex, pageSize);
@@ -52,7 +52,7 @@ namespace Ordering.API.Controllers
                 .ToList()));
         }
 
-        [HttpGet("orders")]
+        [HttpGet("")]
         public async Task<IActionResult> GetOrdersAsync([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
         {
             var orders = await _orderRepository.GetOrders(pageIndex, pageSize);

@@ -3,7 +3,6 @@ using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
 using BookCatalog.API.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookCatalog.API.Controllers
@@ -11,17 +10,17 @@ namespace BookCatalog.API.Controllers
     [Route("api/v1/[controller]")]
     [ApiController]
     [Authorize(Roles="Admin")]
-    public class FormatController : ControllerBase
+    public class FormatsController : ControllerBase
     {
         private IRepository<BookFormat> formatRepository;
 
-        public FormatController(IRepository<BookFormat> formatRepository)
+        public FormatsController(IRepository<BookFormat> formatRepository)
         {
             this.formatRepository = formatRepository;
         }
 
         [AllowAnonymous]
-        [HttpGet("items")]
+        [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -39,15 +38,15 @@ namespace BookCatalog.API.Controllers
             }
             else
             {
-                return Ok(new
-                {
-                    totalFormats = totalFormats,
-                    formats = formatsInPage
-                });
+                return Ok(new PaginatedItems<BookFormat>(
+                    formatsInPage.PageIndex,
+                    formatsInPage.PageSize,
+                    formatsInPage.TotalItems,
+                    formatsInPage.Data));
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost("")]
         public async Task<IActionResult> CreateFormatAsync([FromBody] CreateFormatDTO createFormat)
         {
             BookFormat format = BookMapper.ToFormat(createFormat);
@@ -57,7 +56,7 @@ namespace BookCatalog.API.Controllers
             return Ok(format);
         }
 
-        [HttpPatch("update")]
+        [HttpPatch("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -70,13 +69,13 @@ namespace BookCatalog.API.Controllers
                 return NotFound("Format not found update");
             }
 
-            formatRepository.Update(updateFormat);
+            await formatRepository.Update(updateFormat);
             await formatRepository.SaveChangesAsync();
 
             return Ok("Format updated successfully");
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -89,7 +88,7 @@ namespace BookCatalog.API.Controllers
                 return NotFound("Format not found for delete");
             }
 
-            formatRepository.Remove(new BookFormat { Id = id });
+            await formatRepository.Remove(new BookFormat { Id = id });
 
             return Ok("Format deleted successfully");
         }

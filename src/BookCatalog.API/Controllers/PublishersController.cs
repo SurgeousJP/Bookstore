@@ -3,7 +3,6 @@ using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
 using BookCatalog.API.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookCatalog.API.Controllers
@@ -11,17 +10,17 @@ namespace BookCatalog.API.Controllers
     [Route("api/v1/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-    public class PublisherController : ControllerBase
+    public class PublishersController : ControllerBase
     {
         private IRepository<BookPublisher> publisherRepository;
 
-        public PublisherController(IRepository<BookPublisher> publisherRepository)
+        public PublishersController(IRepository<BookPublisher> publisherRepository)
         {
             this.publisherRepository = publisherRepository;
         }
 
         [AllowAnonymous]
-        [HttpGet("items")]
+        [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -39,15 +38,15 @@ namespace BookCatalog.API.Controllers
             }
             else
             {
-                return Ok(new
-                {
-                    totalPublishers = totalPublishers,
-                    publishers = publishersInPage
-                });
+                return Ok(new PaginatedItems<BookPublisher>(
+                    publishersInPage.PageIndex,
+                    publishersInPage.PageSize,
+                    publishersInPage.TotalItems,
+                    publishersInPage.Data));
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost("")]
         public async Task<IActionResult> CreatePublisherAsync([FromBody] CreatePublisherDTO createPublisher)
         {
             BookPublisher publisher = BookMapper.ToBookPublisher(createPublisher);
@@ -57,7 +56,7 @@ namespace BookCatalog.API.Controllers
             return Ok(publisher);
         }
 
-        [HttpPatch("update")]
+        [HttpPatch("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -70,13 +69,13 @@ namespace BookCatalog.API.Controllers
                 return NotFound("Publisher not found update");
             }
 
-            publisherRepository.Update(updatePublisher);
+            await publisherRepository.Update(updatePublisher);
             await publisherRepository.SaveChangesAsync();
 
             return Ok("Publisher updated successfully");
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -89,7 +88,7 @@ namespace BookCatalog.API.Controllers
                 return NotFound("Publisher not found for delete");
             }
 
-            publisherRepository.Remove(new BookPublisher { Id = id });
+            await publisherRepository.Remove(new BookPublisher { Id = id });
 
             return Ok("Publisher deleted successfully");
         }

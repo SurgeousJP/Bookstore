@@ -8,13 +8,13 @@ namespace Identity.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class UsersController : Controller
     {
         private IProfileService profileService;
         private ILoginService<ApplicationUser> loginService;
         private IJwtBuilder jwtBuilder;
 
-        public UserController(IProfileService profileService, ILoginService<ApplicationUser> loginService,
+        public UsersController(IProfileService profileService, ILoginService<ApplicationUser> loginService,
             IJwtBuilder jwtBuilder)
         {
             this.profileService = profileService;
@@ -114,7 +114,7 @@ namespace Identity.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("get/{userId}")]
+        [HttpGet("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
@@ -129,7 +129,7 @@ namespace Identity.API.Controllers
         }
 
         [Authorize]
-        [HttpPatch("update/{userId}")]
+        [HttpPatch("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
@@ -151,7 +151,7 @@ namespace Identity.API.Controllers
         }
 
         [Authorize(Roles="Admin")]
-        [HttpDelete("delete/{userId}")]
+        [HttpDelete("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]

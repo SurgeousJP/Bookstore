@@ -27,7 +27,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/identity/{everything}",
+      "UpstreamPathTemplate": "/identity.api/v1/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "DELETE" ]
     },
 
@@ -41,7 +41,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/catalog/{everything}",
+      "UpstreamPathTemplate": "/catalog.api/v1/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "PATCH", "DELETE" ]
     },
 
@@ -55,7 +55,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/basket/{everything}",
+      "UpstreamPathTemplate": "/basket.api/v1/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "DELETE" ]
     },
 
@@ -69,7 +69,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/ordering/{everything}",
+      "UpstreamPathTemplate": "/ordering.api/v1/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "DELETE", "PATCH" ]
     }
   ],
