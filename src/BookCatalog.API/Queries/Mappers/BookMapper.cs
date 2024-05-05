@@ -53,7 +53,7 @@ namespace BookCatalog.API.Queries.Mappers
             Dimensions = book.Dimensions,
             DiscountPercentage = book.DiscountPercentage,
             ItemWeight = book.ItemWeight,
-            FormatId = book.FormatId,
+            FormatId = (long)book.FormatId.GetValueOrDefault(),
             AuthorName = book.AuthorName,
             PublisherId = book.PublisherId,
             BookGenres = book.BookGenres.Select(genre => new BookGenre { 

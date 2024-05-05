@@ -1,9 +1,8 @@
-﻿using AutoMapper;
-using EventBus.Messaging.Events;
+﻿using EventBus.Messaging.Events;
 using MassTransit;
 using Ordering.API.Repositories;
 
-namespace Ordering.API.EventBusConsumer
+namespace Ordering.API.EventConsumer
 {
     public class BasketCheckoutConsumer : IConsumer<BasketCheckoutEvent>
     {

@@ -1,5 +1,4 @@
 ﻿using BookCatalog.API.Model;
-using System.Text.Json.Serialization;
 
 namespace BookCatalog.API.Queries.DTOs
 {
@@ -7,7 +6,7 @@ namespace BookCatalog.API.Queries.DTOs
     {
         public long Id { get; set; }
 
-        public string LanguageCode { get; set; } = null!;
+        public string ?LanguageCode { get; set; } = null!;
 
         public float? AverageRating { get; set; }
 
@@ -47,7 +46,7 @@ namespace BookCatalog.API.Queries.DTOs
 
         public virtual ICollection<Genre> BookGenres { get; set; } = new List<Genre>();
 
-        public long FormatId {  get; set; }
+        public long ?FormatId {  get; set; }
 
         public string? FormatName {  get; set; }
 

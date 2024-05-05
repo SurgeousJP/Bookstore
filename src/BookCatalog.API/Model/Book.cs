@@ -9,7 +9,7 @@ public partial class Book
 {
     public long Id { get; set; }
 
-    public string LanguageCode { get; set; } = null!;
+    public string? LanguageCode { get; set; } = null!;
 
     public float? AverageRating { get; set; }
 

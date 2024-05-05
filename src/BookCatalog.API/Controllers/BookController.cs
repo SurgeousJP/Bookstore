@@ -4,6 +4,8 @@ using BookCatalog.API.Repositories;
 using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using EventBus.Messaging.Events;
+using MassTransit;
 
 namespace BookCatalog.API.Controllers
 {
@@ -12,10 +14,14 @@ namespace BookCatalog.API.Controllers
     public class BookController : ControllerBase
     {
         private IRepository<Book> bookRepository;
+        private readonly IPublishEndpoint publishEndpoint;
+        private readonly ILogger<BookController> logger; // Inject ILogger
 
-        public BookController(IRepository<Book> bookRepository)
+        public BookController(IRepository<Book> bookRepository, IPublishEndpoint publishEndpoint, ILogger<BookController> logger)
         {
             this.bookRepository = bookRepository;
+            this.publishEndpoint = publishEndpoint;
+            this.logger = logger;
         }
 
         [HttpGet("search_query")]
@@ -142,7 +148,8 @@ namespace BookCatalog.API.Controllers
             return Ok("Book created successfully");
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpPatch("update")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -151,6 +158,27 @@ namespace BookCatalog.API.Controllers
         {
             try
             {
+                var currentBook = await bookRepository.GetItemByIdAsync(book.Id);
+
+                if (currentBook == null)
+                {
+                    return BadRequest("Book for updated not found");
+                }
+
+                if (book.Price != currentBook.Price)
+                {
+                    logger.LogInformation($"Send data book id : {book.Id} new price: {book.Price}");
+
+                    var eventMessage = new ProductPriceUpdateEvent
+                    {
+                        BookId = (int)book.Id,
+                        NewPrice = (double)book.Price
+                    };
+
+                    logger.LogInformation("Beginning event update product price");
+                    await publishEndpoint.Publish(eventMessage);
+                }
+
                 await bookRepository.Update(BookMapper.ToBookFromBookDetailDTO(book));
                 await bookRepository.SaveChangesAsync();
                 return Ok("Book updated successfully");
@@ -162,7 +190,8 @@ namespace BookCatalog.API.Controllers
             
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]

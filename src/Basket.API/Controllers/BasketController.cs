@@ -3,8 +3,6 @@ using Basket.API.Repositories;
 using Basket.API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using MassTransit;
-using AutoMapper;
-using EventBus.Messaging.Events;
 
 namespace Basket.API.Controllers
 {
@@ -14,14 +12,14 @@ namespace Basket.API.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository basketRepository;
-
         private readonly IPublishEndpoint publishEndpoint;
+        private readonly ILogger<BasketController> logger; // Inject ILogger
 
-        public BasketController(IBasketRepository basketRepository, IPublishEndpoint publishEndpoint)
+        public BasketController(IBasketRepository basketRepository, IPublishEndpoint publishEndpoint, ILogger<BasketController> logger)
         {
             this.basketRepository = basketRepository ?? throw new ArgumentNullException(nameof(basketRepository));
-
             this.publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [AllowAnonymous]

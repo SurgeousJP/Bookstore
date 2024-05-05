@@ -2,6 +2,7 @@
 {
     public static class EventBusConstants
     {
+        public const string ProductUpdateQueue = "product-update-queue";
         public const string BasketCheckoutQueue = "basket-checkout-queue";
         public const string OrderCreatedQueue = "order-created-queue";
         public const string ExchangeName = "my-exchange";

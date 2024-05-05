@@ -3,6 +3,7 @@ using BookCatalog.API.Middleware;
 using BookCatalog.API.Model;
 using BookCatalog.API.Repositories;
 using BookCatalog.API.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +63,15 @@ namespace BookCatalog.API.Extensions
                     builder.Configuration["ConnectionStrings:BookCatalog"
                     ]);
                 options.EnableSensitiveDataLogging();
+            });
+
+            builder.Services.AddMassTransit(config =>
+            {
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+                    cfg.ConfigureEndpoints(ctx);
+                });
             });
         }
 

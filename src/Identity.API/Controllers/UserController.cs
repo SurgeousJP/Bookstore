@@ -46,7 +46,7 @@ namespace Identity.API.Controllers
                 return BadRequest("The password is incorrect, please try again");
             }
 
-            //await loginService.SignIn(user);
+            await loginService.SignIn(user);
 
             var token = jwtBuilder.GetToken(user.Id);
 

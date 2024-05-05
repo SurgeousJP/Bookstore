@@ -30,6 +30,10 @@
     <Folder Include="IntegrationEvents\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks\EventBus.Messaging.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
 	<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>
 	<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>

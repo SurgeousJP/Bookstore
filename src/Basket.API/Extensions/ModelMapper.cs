@@ -13,10 +13,13 @@ namespace Basket.API.Extensions
                 BuyerId = userId,
             };
 
+            int idx = 1;
+
             foreach (var item in basketItems)
             {
                 customerBasket.Items.Add(new()
                 {
+                    Id = idx++,
                     BookId = item.BookId,
                     Title = item.Title,
                     UnitPrice = (decimal)item.UnitPrice,

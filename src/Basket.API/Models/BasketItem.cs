@@ -2,7 +2,7 @@
 {
     public class BasketItem
     {
-        public string Id { get; set; } = null!;
+        public int Id { get; set; }
         public int BookId { get; set; }
         public string Title { get; set; } = null!;
         public decimal UnitPrice { get; set; }

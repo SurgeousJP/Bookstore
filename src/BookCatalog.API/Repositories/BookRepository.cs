@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq.Expressions;
+using EventBus.Messaging.Events;
 
 namespace BookCatalog.API.Repositories
 {
@@ -116,15 +117,14 @@ namespace BookCatalog.API.Repositories
                 .Include(book => book.BookGenres)
                 .FirstOrDefaultAsync();
 
-            if (currentBook == null)
-            {
-                throw new Exception("The book for update is not found");
-            }
-            else
-            {
+            if (currentBook != null) {
                 BookMapper.MapBookToBook(currentBook, updateBook);
+              
                 context.TryUpdateManyToMany(currentBook.BookGenres, updateBook.BookGenres, book => book.GenreId);
+                
+                await context.SaveChangesAsync();
             }
+            else throw new Exception("The book for update is not found");
         }
 
         public async override Task Remove(Book removeBook)

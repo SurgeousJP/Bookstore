@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Ordering.API.EventBusConsumer;
+using Ordering.API.EventConsumer;
 using Ordering.API.Infrastructure;
 using Ordering.API.Middleware;
 using Ordering.API.Model;

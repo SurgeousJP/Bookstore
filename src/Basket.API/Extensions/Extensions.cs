@@ -1,4 +1,5 @@
-﻿using Basket.API.Middleware;
+﻿using Basket.API.EventConsumer;
+using Basket.API.Middleware;
 using Basket.API.Repositories;
 using Basket.API.Services;
 using Identity.API.Services;
@@ -55,8 +56,17 @@ namespace Basket.API.Extensions
             builder.Services.AddControllers();
 
             builder.Services.AddMassTransit(config => {
+                config.AddConsumer<ProductPriceUpdateEventConsumer>();
+
                 config.UsingRabbitMq((ctx, cfg) => {
                     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+
+                    cfg.ConfigureEndpoints(ctx);
+
+                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.ProductUpdateQueue, c =>
+                    {
+                        c.ConfigureConsumer<ProductPriceUpdateEventConsumer>(ctx);
+                    });
                 });
             });
         }
