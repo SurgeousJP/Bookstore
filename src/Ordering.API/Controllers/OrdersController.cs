@@ -89,6 +89,21 @@ namespace Ordering.API.Controllers
 
             return Ok(cardTypes);
         }
+
+        [AllowAnonymous]
+        [HttpGet("all-status")]
+        public async Task<IActionResult> GetAllOrderStatus()
+        {
+            var orderStatus = await _orderRepository.GetAllOrderStatus();
+
+            if (orderStatus == null)
+            {
+                return BadRequest("Something went wrong");
+            }
+
+            return Ok(orderStatus);
+        }
+
         [HttpPost("")]
         public async Task<IActionResult> CreateOrderFromBasket([FromBody] CreateOrderDTO createOrderDTO)
         {

@@ -12,5 +12,6 @@ namespace Ordering.API.Repositories
         public Task<PaginatedItems<Order>> GetOrders(int pageIndex, int pageSize);
         public void DeleteOrder(Order order);
         public Task SaveChangesAsync();
+        public Task<ICollection<OrderStatus>> GetAllOrderStatus();
     }
 }

@@ -26,6 +26,13 @@ namespace Ordering.API.Repositories
             _context.Orders.Remove(order);
         }
 
+        public async Task<ICollection<OrderStatus>> GetAllOrderStatus()
+        {
+            var orderStatuses = await _context.OrderStatuses.ToListAsync();
+
+            return orderStatuses;
+        }
+
         public async Task<Order> GetOrderByIdAsync(int orderId)
         {
             var order = await _context.Orders
