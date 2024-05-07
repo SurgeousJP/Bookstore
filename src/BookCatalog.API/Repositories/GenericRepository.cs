@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using BookCatalog.API.Extensions;
+﻿using System.Linq.Expressions;
 using BookCatalog.API.Infrastructure;
 using BookCatalog.API.Model;
 using Microsoft.EntityFrameworkCore;

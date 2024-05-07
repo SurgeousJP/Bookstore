@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.API.Model;
+using Ordering.API.Models.BuyerModel;
 using Ordering.API.Models.DTOs;
+using Ordering.API.Models.OrderModel;
 using Ordering.API.Repositories;
+using System.Net;
 
 namespace Ordering.API.Controllers
 {
@@ -14,17 +17,19 @@ namespace Ordering.API.Controllers
     {
         private readonly IBuyerRepository _buyerRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly ILogger<OrdersController> _logger;
 
-        public OrdersController(IBuyerRepository buyerRepository, IOrderRepository orderRepository)
+        public OrdersController(IBuyerRepository buyerRepository, IOrderRepository orderRepository, ILogger<OrdersController> logger)
         {
             _buyerRepository = buyerRepository;
             _orderRepository = orderRepository;
+            _logger = logger;
         }
 
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrderByIdAsync([FromRoute] int orderId)
         {
-            var order = await _orderRepository.GetOrderAsync(orderId);
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
 
             if (order == null)
             {
@@ -71,6 +76,7 @@ namespace Ordering.API.Controllers
                 .ToList()));
         }
 
+        [AllowAnonymous]
         [HttpGet("cardtypes")]
         public async Task<IActionResult> GetCardTypesAsync()
         {
@@ -83,21 +89,92 @@ namespace Ordering.API.Controllers
 
             return Ok(cardTypes);
         }
-        //[HttpPost("/create-order")]
-        //public Task<IActionResult> CreateOrderFromBasket();
+        [HttpPost("")]
+        public async Task<IActionResult> CreateOrderFromBasket([FromBody] CreateOrderDTO createOrderDTO)
+        {
+            // buyerid -> verify if not exists -> create
+            // address if not exists -> create else get and put fk
+            // paymentmethod -> verify info if not exists -> create else put fk
+            // items 
 
-        //[HttpPatch("/ship-order")]
-        //public Task<IActionResult> ShipOrderAsync();
+            var buyer = await _buyerRepository.FindAsync(createOrderDTO.userId);
 
-        //[HttpPatch("/cancel-order")]
-        //public async Task<IActionResult> CancelOrderAsync([FromQuery] int orderId, [FromQuery] Guid buyerId)
-        //{
-        //    var orderForUpdate = await _orderRepository.GetOrdersFromUserAsync(buyerId, 0, 1);
+            if (buyer == null)
+            {
+                _logger.LogInformation("The buyer is null, begin create new buyer");
+                await _buyerRepository.AddAsync(new Buyer
+                {
+                    Id = createOrderDTO.userId,
+                    Name = createOrderDTO.userName,
+                });
 
-        //    if (orderForUpdate.Data == null || orderForUpdate.Data.Count == 0)
-        //    {
-        //        return NotFound("Order not found for cancel");
-        //    }
-        //}
+                await _buyerRepository.SaveChangeAsync();
+
+                buyer = await _buyerRepository.FindAsync(createOrderDTO.userId);
+            }
+
+            _logger.LogInformation("Begin fetch payment method and address");
+            var buyerPaymentMethod = buyer.VerifyOrAddPaymentMethod(createOrderDTO.paymentMethod);
+            var buyerOrderAddress = buyer.VerifyOrAddAddress(createOrderDTO.address);
+
+            await _buyerRepository.SaveChangeAsync();
+
+            _logger.LogInformation("Begin create new order");
+            var order = new Order
+            {
+                AddressId = buyerOrderAddress.Id,
+                BuyerId = buyer.Id,
+                OrderStatusId = OrderStatus.ORDER_SUBMITTED,
+                Description = createOrderDTO.description,
+                PaymentMethodId = buyerPaymentMethod.Id,
+                OrderDate = DateOnly.FromDateTime(DateTime.Now),
+                TotalAmount = createOrderDTO.orderItems.Sum(item => item.UnitPrice * item.Quantity),
+                OrderItems = createOrderDTO.orderItems
+            };
+
+            _orderRepository.AddOrder(order);
+            await _orderRepository.SaveChangesAsync();
+
+            _logger.LogInformation($"The order with {order.Id} has been created successfully");
+            return Ok(order);
+        }
+
+        [HttpPatch("{orderId}/status/{orderStatusId}")]
+        public async Task<IActionResult> UpdateOrderStatusAsync([FromRoute] int orderId, [FromRoute] int orderStatusId)
+        {
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+
+            if (order == null)
+            {
+                return BadRequest("Order not found, please try again");
+            }
+
+            order.OrderStatusId = orderStatusId;
+
+            _orderRepository.UpdateOrder(order);
+
+            return Ok("Order status updated successfully");
+        }
+
+        [HttpPatch("{orderId}/ship")]
+        public async Task<IActionResult> ShipOrderAsync([FromRoute] int orderId)
+        {
+            await UpdateOrderStatusAsync(orderId, OrderStatus.ORDER_SHIPPED);
+            return Ok("Order status changed to shipped");
+        }
+
+        [HttpPatch("{orderId}/paid")]
+        public async Task<IActionResult> PayOrderAsync([FromRoute] int orderId)
+        {
+            await UpdateOrderStatusAsync(orderId, OrderStatus.ORDER_PAID);
+            return Ok("Order status changed to paid");
+        }
+
+        [HttpPatch("{orderId}/cancel")]
+        public async Task<IActionResult> CancelOrderAsync([FromRoute] int orderId)
+        {
+            await UpdateOrderStatusAsync(orderId, OrderStatus.ORDER_STATUS_CANCELLED);
+            return Ok("Order status changed to cancelled");
+        }
     }
 }

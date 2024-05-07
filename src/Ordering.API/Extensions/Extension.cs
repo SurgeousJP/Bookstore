@@ -5,13 +5,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Ordering.API.EventConsumer;
 using Ordering.API.Infrastructure;
 using Ordering.API.Middleware;
 using Ordering.API.Model;
 using Ordering.API.Repositories;
 using Ordering.API.Services;
+using System.Globalization;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Ordering.API.Extensions
 {
@@ -28,6 +30,11 @@ namespace Ordering.API.Extensions
             // Swagger genereator
             builder.Services.AddSwaggerGen(c =>
             {
+                c.MapType<DateOnly>(() => new OpenApiSchema
+                {
+                    Type = "string",
+                    Format = "date"
+                });
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ordering", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -66,15 +73,14 @@ namespace Ordering.API.Extensions
 
             builder.Services.AddMassTransit(config =>
             {
-                config.AddConsumer<BasketCheckoutConsumer>();
                 config.UsingRabbitMq((ctx, cfg) =>
                 {
                     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
 
-                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.BasketCheckoutQueue, c =>
-                    {
-                        c.ConfigureConsumer<BasketCheckoutConsumer>(ctx);
-                    });
+                    //cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.BasketCheckoutQueue, c =>
+                    //{
+                    //    c.ConfigureConsumer<BasketCheckoutConsumer>(ctx);
+                    //});
                 });
             });
         }
@@ -116,6 +122,20 @@ namespace Ordering.API.Extensions
                     .RequireAuthenticatedUser()
                     .Build();
             });
+        }
+    }
+    public class DateOnlyJsonConverter : JsonConverter<DateOnly>
+    {
+        private const string Format = "yyyy-MM-dd";
+
+        public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return DateOnly.ParseExact(reader.GetString(), Format, CultureInfo.InvariantCulture);
+        }
+
+        public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString(Format, CultureInfo.InvariantCulture));
         }
     }
 }

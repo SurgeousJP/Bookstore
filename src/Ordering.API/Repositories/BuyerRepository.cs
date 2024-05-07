@@ -1,6 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Ordering.API.Infrastructure;
+using Ordering.API.Models.BuyerModel;
 
 namespace Ordering.API.Repositories
 {
@@ -13,9 +13,9 @@ namespace Ordering.API.Repositories
             this._context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Buyer Add(Buyer buyer)
+        public async Task<Buyer> AddAsync(Buyer buyer)
         {
-             _context.Buyers.Add(buyer);
+            await _context.Buyers.AddAsync(buyer);
             return buyer;
         }
 
@@ -23,6 +23,8 @@ namespace Ordering.API.Repositories
         {
             var buyer = await _context.Buyers
                 .Where(b => b.Id == identityGuid)
+                .Include(b => b.PaymentMethods)
+                .Include(b => b.Addresses)
                 .SingleOrDefaultAsync();
 
             return buyer;
@@ -38,8 +40,12 @@ namespace Ordering.API.Repositories
         {
             var cardtypes = await _context.Cardtypes
                 .ToListAsync();
-
             return cardtypes;
+        }
+
+        public async Task SaveChangeAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -2,18 +2,18 @@
 using BookCatalog.API.Infrastructure;
 using BookCatalog.API.Model;
 using BookCatalog.API.Queries.Mappers;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq.Expressions;
-using EventBus.Messaging.Events;
 
 namespace BookCatalog.API.Repositories
 {
     public class BookRepository : GenericRepository<Book>, IRepository<Book>
     {
-        public BookRepository(BookContext context) : base(context)
+        protected readonly ILogger<BookRepository> logger;
+        public BookRepository(BookContext context, ILogger<BookRepository> logger) : base(context)
         {
+            this.logger = logger;
+            this.context = context;
         }
 
         public override async Task<PaginatedItems<Book>> SearchAsync(
@@ -111,20 +111,27 @@ namespace BookCatalog.API.Repositories
         }
 
         public async override Task Update(Book updateBook)
-        {
+        {  
             var currentBook = await context.Set<Book>().AsQueryable()
                 .Where(book => book.Id == updateBook.Id)
                 .Include(book => book.BookGenres)
                 .FirstOrDefaultAsync();
 
-            if (currentBook != null) {
+            if (currentBook != null)
+            {
+                logger.LogInformation($"Began updating book with id: {updateBook.Id}");
                 BookMapper.MapBookToBook(currentBook, updateBook);
-              
+
                 context.TryUpdateManyToMany(currentBook.BookGenres, updateBook.BookGenres, book => book.GenreId);
-                
+
                 await context.SaveChangesAsync();
+                logger.LogInformation($"Book with book id {updateBook.Id} successfully");
             }
-            else throw new Exception("The book for update is not found");
+            else
+            {
+                logger.LogInformation($"Book with {updateBook.Id} not found");
+                throw new Exception("The book for update is not found");
+            }
         }
 
         public async override Task Remove(Book removeBook)
@@ -135,11 +142,14 @@ namespace BookCatalog.API.Repositories
 
             if (currentBook == null)
             {
+                logger.LogInformation($"Book with {removeBook.Id} not found");
                 throw new Exception("The book for update is not found");
             }
             else
             {
+                logger.LogInformation($"Began removing book with id: {removeBook.Id}");
                 context.Remove(new Book { Id = removeBook.Id });
+                logger.LogInformation($"Succesfully removed book with id: {removeBook.Id}");
             }
         }
     }

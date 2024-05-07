@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ordering.API.Infrastructure;
 using Ordering.API.Model;
-using Ordering.API.Models.Order;
+using Ordering.API.Models.OrderModel;
 
 namespace Ordering.API.Repositories
 {
@@ -26,7 +26,7 @@ namespace Ordering.API.Repositories
             _context.Orders.Remove(order);
         }
 
-        public async Task<Order> GetOrderAsync(int orderId)
+        public async Task<Order> GetOrderByIdAsync(int orderId)
         {
             var order = await _context.Orders
                 .Where(o => o.Id == orderId)
@@ -76,6 +76,11 @@ namespace Ordering.API.Repositories
                 pageSize,
                 totalItems,
                 itemsInPage);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
 
         public Order UpdateOrder(Order order)

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Ordering.API.Models.Order;
+namespace Ordering.API.Models.OrderModel;
 
 public partial class OrderItem
 {

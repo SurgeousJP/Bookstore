@@ -1,4 +1,4 @@
-﻿using Ordering.API.Models.Order;
+﻿using Ordering.API.Models.OrderModel;
 
 namespace Ordering.API.Models.DTOs
 {

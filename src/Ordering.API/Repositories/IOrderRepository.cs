@@ -1,5 +1,5 @@
 ﻿using Ordering.API.Model;
-using Ordering.API.Models.Order;
+using Ordering.API.Models.OrderModel;
 
 namespace Ordering.API.Repositories
 {
@@ -7,9 +7,10 @@ namespace Ordering.API.Repositories
     {
         public Order AddOrder(Order order);
         public Order UpdateOrder(Order order);
-        public Task<Order> GetOrderAsync(int orderId);
+        public Task<Order> GetOrderByIdAsync(int orderId);
         public Task<PaginatedItems<Order>> GetOrdersFromUserAsync(Guid buyerId, int pageIndex, int pageSize);
         public Task<PaginatedItems<Order>> GetOrders(int pageIndex, int pageSize);
         public void DeleteOrder(Order order);
+        public Task SaveChangesAsync();
     }
 }

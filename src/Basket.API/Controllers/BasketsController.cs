@@ -13,13 +13,11 @@ namespace Basket.API.Controllers
     {
         private readonly IBasketRepository basketRepository;
         private readonly IPublishEndpoint publishEndpoint;
-        private readonly ILogger<BasketsController> logger; // Inject ILogger
 
-        public BasketsController(IBasketRepository basketRepository, IPublishEndpoint publishEndpoint, ILogger<BasketsController> logger)
+        public BasketsController(IBasketRepository basketRepository, IPublishEndpoint publishEndpoint)
         {
             this.basketRepository = basketRepository ?? throw new ArgumentNullException(nameof(basketRepository));
             this.publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [AllowAnonymous]
@@ -28,7 +26,7 @@ namespace Basket.API.Controllers
         {
             if (userId == null ||  userId.Length == 0)
             {
-                return Ok("No basket found");
+                return Ok("User id is null or empty");
             }
             var basket = await basketRepository.GetBasketAsync(userId);
 
@@ -63,25 +61,6 @@ namespace Basket.API.Controllers
         {
             await basketRepository.DeleteBasketAsync(userId);
             return Ok("Basket deleted successfully");
-        }
-
-        [HttpPost("checkout/{userId}")]
-        public async Task<IActionResult> Checkout([FromRoute] string userId)
-        {
-            var basket = await basketRepository.GetBasketAsync(userId);
-
-            if (basket == null)
-            {
-                return BadRequest("Customer basket not found !");
-            }
-
-            var eventMessage = ModelMapper.MapToBasketCheckoutEvent(userId, basket.Items);
-
-            await publishEndpoint.Publish(eventMessage);
-
-            await basketRepository.DeleteBasketAsync(userId);
-
-            return Accepted("Order is being created");
         }
     }
 }

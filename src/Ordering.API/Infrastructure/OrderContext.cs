@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Ordering.API.Models.Order;
+﻿using Microsoft.EntityFrameworkCore;
+using Ordering.API.BuyerModel;
+using Ordering.API.Models.BuyerModel;
+using Ordering.API.Models.OrderModel;
 
 namespace Ordering.API.Infrastructure;
 
@@ -55,6 +55,7 @@ public partial class OrderContext : DbContext
 
             entity.ToTable("address");
 
+            entity.Property(e => e.BuyerId).HasColumnName("buyer_id");
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.City).HasColumnName("city");
             entity.Property(e => e.Country).HasColumnName("country");
@@ -62,6 +63,10 @@ public partial class OrderContext : DbContext
             entity.Property(e => e.Street).HasColumnName("street");
             entity.Property(e => e.Ward).HasColumnName("ward");
             entity.Property(e => e.ZipCode).HasColumnName("zip_code");
+
+            entity.HasOne(d => d.Buyer).WithMany(p => p.Addresses)
+                                       .HasForeignKey(d => d.BuyerId)
+                                       .HasConstraintName("address_buyer_id_fkey");
         });
 
         modelBuilder.Entity<Buyer>(entity =>
@@ -99,7 +104,6 @@ public partial class OrderContext : DbContext
             entity.Property(e => e.OrderDate).HasColumnName("order_date");
             entity.Property(e => e.OrderStatusId).HasColumnName("order_status_id");
             entity.Property(e => e.PaymentMethodId).HasColumnName("payment_method_id");
-            entity.Property(e => e.ShippingId).HasColumnName("shipping_id");
             entity.Property(e => e.TotalAmount).HasColumnName("total_amount");
 
             entity.HasOne(d => d.Address).WithMany(p => p.Orders)

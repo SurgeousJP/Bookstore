@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Ordering.API.BuyerModel;
 using System.Text.Json.Serialization;
 
-namespace Ordering.API;
+namespace Ordering.API.Models.BuyerModel;
 
 public partial class Cardtype
 {

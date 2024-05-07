@@ -1,6 +1,4 @@
-﻿using Ordering.API.Models.Order;
-
-namespace Ordering.API.Models.DTOs
+﻿namespace Ordering.API.Models.DTOs
 {
     public class OrderDTO
     {

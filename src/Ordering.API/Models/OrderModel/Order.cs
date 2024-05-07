@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Ordering.API.BuyerModel;
+using Ordering.API.Models.BuyerModel;
 
-namespace Ordering.API.Models.Order;
+namespace Ordering.API.Models.OrderModel;
 
 public partial class Order
 {
@@ -20,8 +20,6 @@ public partial class Order
     public DateOnly? OrderDate { get; set; }
 
     public float? TotalAmount { get; set; }
-
-    public long? ShippingId { get; set; }
 
     public virtual Address Address { get; set; } = null!;
 
