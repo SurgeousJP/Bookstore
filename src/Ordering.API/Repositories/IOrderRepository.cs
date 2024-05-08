@@ -6,6 +6,7 @@ namespace Ordering.API.Repositories
     public interface IOrderRepository
     {
         public Order AddOrder(Order order);
+        public Task AddOrderItems(List<OrderItem> items);
         public Order UpdateOrder(Order order);
         public Task<Order> GetOrderByIdAsync(int orderId);
         public Task<PaginatedItems<Order>> GetOrdersFromUserAsync(Guid buyerId, int pageIndex, int pageSize);

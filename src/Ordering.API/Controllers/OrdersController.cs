@@ -1,4 +1,7 @@
 ﻿using BookCatalog.API.Queries.Mappers;
+using EventBus.Messaging.Events;
+using EventBus.Messaging.SharedModel;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.API.Model;
@@ -6,7 +9,6 @@ using Ordering.API.Models.BuyerModel;
 using Ordering.API.Models.DTOs;
 using Ordering.API.Models.OrderModel;
 using Ordering.API.Repositories;
-using System.Net;
 
 namespace Ordering.API.Controllers
 {
@@ -18,12 +20,14 @@ namespace Ordering.API.Controllers
         private readonly IBuyerRepository _buyerRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly ILogger<OrdersController> _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public OrdersController(IBuyerRepository buyerRepository, IOrderRepository orderRepository, ILogger<OrdersController> logger)
+        public OrdersController(IBuyerRepository buyerRepository, IOrderRepository orderRepository, ILogger<OrdersController> logger, IPublishEndpoint publishEndpoint)
         {
             _buyerRepository = buyerRepository;
             _orderRepository = orderRepository;
             _logger = logger;
+            _publishEndpoint = publishEndpoint;
         }
 
         [HttpGet("{orderId}")]
@@ -144,13 +148,34 @@ namespace Ordering.API.Controllers
                 PaymentMethodId = buyerPaymentMethod.Id,
                 OrderDate = DateOnly.FromDateTime(DateTime.Now),
                 TotalAmount = createOrderDTO.orderItems.Sum(item => item.UnitPrice * item.Quantity),
-                OrderItems = createOrderDTO.orderItems
             };
 
             _orderRepository.AddOrder(order);
             await _orderRepository.SaveChangesAsync();
 
+            foreach (var orderItem in createOrderDTO.orderItems)
+            {
+                orderItem.OrderId = order.Id;
+            }
+
+            await _orderRepository.AddOrderItems(createOrderDTO.orderItems);
+            await _orderRepository.SaveChangesAsync();
+
             _logger.LogInformation($"The order with {order.Id} has been created successfully");
+
+            _logger.LogInformation($"Began publishing OrderStartedEvent with order id {order.Id}");
+            await _publishEndpoint.Publish(new OrderStartedEvent
+            {
+                BuyerId = buyer.Id
+            });
+
+            _logger.LogInformation($"Began OrderStockValidatonEvent with order id {order.Id}");
+            await _publishEndpoint.Publish(new OrderStockValidatonEvent
+            {
+                OrderId = (int)order.Id,
+                OrderItems = createOrderDTO.orderItems.Select(i => new OrderItemSimplified { BookId = (int)i.BookId, Quantity = (int)i.Quantity})
+            });
+
             return Ok(order);
         }
 
@@ -181,6 +206,16 @@ namespace Ordering.API.Controllers
         [HttpPatch("{orderId}/paid")]
         public async Task<IActionResult> PayOrderAsync([FromRoute] int orderId)
         {
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+
+            _logger.LogInformation($"Began publishing OrderStatusChangeToPaidEvent with order id {order.Id}");
+            await _publishEndpoint.Publish(new OrderStatusChangeToPaidEvent
+            {
+                OrderItems = order.OrderItems.Select(i => new OrderItemSimplified { BookId = (int)i.BookId, Quantity = (int)i.Quantity })
+            });
+
+            _logger.LogInformation($"Finished OrderStatusChangeToPaidEvent with order id {order.Id}");
+
             await UpdateOrderStatusAsync(orderId, OrderStatus.ORDER_PAID);
             return Ok("Order status changed to paid");
         }
@@ -188,6 +223,23 @@ namespace Ordering.API.Controllers
         [HttpPatch("{orderId}/cancel")]
         public async Task<IActionResult> CancelOrderAsync([FromRoute] int orderId)
         {
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+
+            if (order.OrderStatusId != OrderStatus.ORDER_SUBMITTED || order.OrderStatusId != OrderStatus.ORDER_STATUS_CANCELLED)
+            {
+                _logger.LogInformation($"Began publishing OrderRestockEvent with order id {order.Id}");
+                await _publishEndpoint.Publish(new OrderRestockEvent
+                {
+                    OrderItems = order.OrderItems.Select(i => new OrderItemSimplified { BookId = (int)i.BookId, Quantity = (int)i.Quantity })
+                });
+                _logger.LogInformation($"Finished publishing OrderRestockEvent with order id {order.Id}");
+            }
+            
+            if (order.OrderStatusId == OrderStatus.ORDER_SHIPPED || order.OrderStatusId == OrderStatus.ORDER_PAID)
+            {
+                // Refund
+            }
+
             await UpdateOrderStatusAsync(orderId, OrderStatus.ORDER_STATUS_CANCELLED);
             return Ok("Order status changed to cancelled");
         }

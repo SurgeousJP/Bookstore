@@ -21,6 +21,12 @@ namespace Ordering.API.Repositories
             return order;
         }
 
+        public async Task AddOrderItems(List<OrderItem> items)
+        {
+            _context.OrderItems.AddRange(items);
+            return;
+        }
+
         public void DeleteOrder(Order order)
         {
             _context.Orders.Remove(order);
@@ -37,6 +43,10 @@ namespace Ordering.API.Repositories
         {
             var order = await _context.Orders
                 .Where(o => o.Id == orderId)
+                .Include(o => o.OrderItems)
+                .Include(o => o.PaymentMethod)
+                .Include(o => o.Address)
+                .Include(o => o.OrderStatus)
                 .SingleOrDefaultAsync();
 
             return order;

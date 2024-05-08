@@ -57,15 +57,19 @@ namespace Basket.API.Extensions
 
             builder.Services.AddMassTransit(config => {
                 config.AddConsumer<ProductPriceUpdateEventConsumer>();
+                config.AddConsumer<OrderStartedEventConsumer>();
 
                 config.UsingRabbitMq((ctx, cfg) => {
                     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
 
-                    cfg.ConfigureEndpoints(ctx);
-
                     cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.ProductUpdateQueue, c =>
                     {
                         c.ConfigureConsumer<ProductPriceUpdateEventConsumer>(ctx);
+                    });
+
+                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.OrderStartedQueue, c =>
+                    {
+                        c.ConfigureConsumer<OrderStartedEventConsumer>(ctx);
                     });
                 });
             });

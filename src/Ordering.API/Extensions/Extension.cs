@@ -14,6 +14,8 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using EventBus.Messaging.Events;
+using Ordering.API.EventConsumer;
 
 namespace Ordering.API.Extensions
 {
@@ -73,14 +75,22 @@ namespace Ordering.API.Extensions
 
             builder.Services.AddMassTransit(config =>
             {
+                config.AddConsumer<OrderStatusChangedToStockedCancelEventConsumer>();
+                config.AddConsumer<OrderStatusChangedToStockedConfirmedEventConsumer>();
+
                 config.UsingRabbitMq((ctx, cfg) =>
                 {
                     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
 
-                    //cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.BasketCheckoutQueue, c =>
-                    //{
-                    //    c.ConfigureConsumer<BasketCheckoutConsumer>(ctx);
-                    //});
+                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.OrderStatusChangedToStockCancelQueue, c =>
+                    {
+                        c.ConfigureConsumer<OrderStatusChangedToStockedCancelEventConsumer>(ctx);
+                    });
+
+                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.OrderStatusChangedToStockConfirmedQueue, c =>
+                    {
+                        c.ConfigureConsumer<OrderStatusChangedToStockedConfirmedEventConsumer>(ctx);
+                    });
                 });
             });
         }

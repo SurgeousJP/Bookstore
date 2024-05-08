@@ -1,4 +1,5 @@
-﻿using BookCatalog.API.Infrastructure;
+﻿using BookCatalog.API.EventBusConsumer;
+using BookCatalog.API.Infrastructure;
 using BookCatalog.API.Middleware;
 using BookCatalog.API.Model;
 using BookCatalog.API.Repositories;
@@ -67,10 +68,27 @@ namespace BookCatalog.API.Extensions
 
             builder.Services.AddMassTransit(config =>
             {
-                config.UsingRabbitMq((ctx, cfg) =>
-                {
+                config.AddConsumer<OrderRestockEventConsumer>();
+                config.AddConsumer<OrderStatusChangedToPaidEventConsumer>();
+                config.AddConsumer<OrderStockValidationEventConsumer>();
+                   
+                config.UsingRabbitMq((ctx, cfg) => {
                     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
-                    cfg.ConfigureEndpoints(ctx);
+
+                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.OrderRestockedQueue, c =>
+                    {
+                        c.ConfigureConsumer<OrderRestockEventConsumer>(ctx);
+                    });
+
+                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.OrderPaidQueue, c =>
+                    {
+                        c.ConfigureConsumer<OrderStatusChangedToPaidEventConsumer>(ctx);
+                    });
+
+                    cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.OrderStockValidationQueue, c =>
+                    {
+                        c.ConfigureConsumer<OrderStockValidationEventConsumer>(ctx);
+                    });
                 });
             });
         }
