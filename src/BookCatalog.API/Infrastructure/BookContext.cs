@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using BookCatalog.API.Model;
+﻿using BookCatalog.API.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookCatalog.API.Infrastructure;
@@ -24,6 +22,8 @@ public partial class BookContext : DbContext
     public virtual DbSet<BookPublisher> BookPublishers { get; set; }
 
     public virtual DbSet<Genre> Genres { get; set; }
+
+    public virtual DbSet<BookReview> BookReviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -171,6 +171,26 @@ public partial class BookContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name");
+        });
+
+        modelBuilder.Entity<BookReview>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.BookId }).HasName("book_reviews_pkey");
+
+            entity.ToTable("book_reviews");
+
+            entity.Property(e => e.UserId).HasColumnName("user_id").HasColumnType("uniqueidentifier");
+            entity.Property(e => e.BookId).HasColumnName("book_id");
+            entity.Property(e => e.Username).HasColumnName("username");
+            entity.Property(e => e.UserProfileImage).HasColumnName("user_profile_image");
+            entity.Property(e => e.Comment).HasColumnName("comment");
+            entity.Property(e => e.RatingPoint).HasColumnName("rating_point");
+            entity.Property(e => e.CreationDate).HasColumnName("creation_date");
+
+            entity.HasOne(e => e.Book).WithMany(b => b.BookReviews)
+                .HasForeignKey(e => e.BookId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("book_reviews_book_id_fkey");
         });
 
         OnModelCreatingPartial(modelBuilder);

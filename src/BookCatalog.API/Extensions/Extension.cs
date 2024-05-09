@@ -57,6 +57,7 @@ namespace BookCatalog.API.Extensions
             builder.Services.AddTransient<IRepository<Book>, BookRepository>();
             builder.Services.AddTransient<IRepository<BookFormat>, FormatRepository>();
             builder.Services.AddTransient<IRepository<BookPublisher>, PublisherRepository>();
+            builder.Services.AddTransient<IRepository<BookReview>, ReviewsRepository>();
 
             // Add Db context for catalog
             builder.Services.AddDbContext<BookContext>(options => {

@@ -56,4 +56,6 @@ public partial class Book
     public virtual BookFormat Format { get; set; } = null!;
 
     public virtual BookPublisher Publisher { get; set; } = null!;
+
+    public virtual ICollection<BookReview> BookReviews { get; set; } = new List<BookReview>();
 }

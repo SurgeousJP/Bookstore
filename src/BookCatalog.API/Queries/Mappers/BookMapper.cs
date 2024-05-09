@@ -1,7 +1,9 @@
 ﻿using BookCatalog.API.Extensions;
 using BookCatalog.API.Model;
 using BookCatalog.API.Queries.DTOs;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -156,5 +158,16 @@ namespace BookCatalog.API.Queries.Mappers
 
         public static BookPublisher ToBookPublisher(CreatePublisherDTO publisher) 
             => new BookPublisher { Name = publisher.Name };
+
+        public static BookReview ToBookReview(BookReviewDTO bookReview) => new BookReview
+        {
+            UserId = bookReview.UserId,
+            BookId = bookReview.BookId,
+            Username = bookReview.Username,
+            UserProfileImage = bookReview.UserProfileImage,
+            Comment = bookReview.Comment, 
+            RatingPoint = bookReview.RatingPoint,
+            CreationDate = DateOnly.FromDateTime(DateTime.Now)
+        };
     }
 }
