@@ -62,7 +62,7 @@ namespace Ordering.API.Controllers
                 var stripeEvent = EventUtility.ConstructEvent(
                   json,
                   Request.Headers["Stripe-Signature"],
-                  _stripeAssessor.StripeAPIKey
+                  _stripeAssessor.WebhookSecretKey
                 );
 
                 _logger.LogInformation($"{stripeEvent}");
@@ -87,7 +87,7 @@ namespace Ordering.API.Controllers
             }
             catch (StripeException e)
             {
-                _logger.LogInformation("An error has been occurred");
+                _logger.LogInformation("An error has been occurred: " + e.Message);
                 return BadRequest("Error message: " + e.Message);
             }
         }
