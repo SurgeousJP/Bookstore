@@ -5,17 +5,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Ordering.API.EventConsumer;
 using Ordering.API.Infrastructure;
 using Ordering.API.Middleware;
 using Ordering.API.Model;
 using Ordering.API.Repositories;
 using Ordering.API.Services;
+using Stripe;
 using System.Globalization;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Text.Json;
-using EventBus.Messaging.Events;
-using Ordering.API.EventConsumer;
+using System.Text.Json.Serialization;
 
 namespace Ordering.API.Extensions
 {
@@ -28,6 +28,8 @@ namespace Ordering.API.Extensions
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddJwtAuthentication(builder.Configuration);
+            builder.Services.AddMvc().AddNewtonsoftJson();
+
 
             // Swagger genereator
             builder.Services.AddSwaggerGen(c =>
@@ -66,7 +68,8 @@ namespace Ordering.API.Extensions
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
             // Add Db context for catalog
-            builder.Services.AddDbContext<OrderContext>(options => {
+            builder.Services.AddDbContext<OrderContext>(options =>
+            {
                 options.UseNpgsql(
                     builder.Configuration["ConnectionStrings:Ordering"
                     ]);
@@ -93,6 +96,9 @@ namespace Ordering.API.Extensions
                     });
                 });
             });
+
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
+            StripeConfiguration.ApiKey = builder.Configuration["StripeSettings:StripeAPIKey"];
         }
 
         public static void AddJwtAuthentication

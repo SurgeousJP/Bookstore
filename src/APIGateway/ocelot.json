@@ -14,8 +14,21 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/{everything}",
+      "UpstreamPathTemplate": "/recsys.api/{everything}",
       "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "SwaggerKey": "chatbot",
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "chatbot",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/chatbot.api/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST" ]
     },
     {
       "SwaggerKey": "identity-api",

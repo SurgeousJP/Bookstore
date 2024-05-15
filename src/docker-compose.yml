@@ -71,10 +71,31 @@ services:
     networks:
         - backend
 
+  chatbot:
+    image: ${DOCKER_REGISTRY-}chatbot
+    container_name: chatbot
+    ports:
+        - 5007:8080
+    build:
+        context: ..\src\ChatbotAPI
+        dockerfile: Dockerfile
+    networks:
+        - backend
+ 
   rabbitmq:
     image: rabbitmq:3-management-alpine
     networks:
         - backend
+
+  stripe:
+    image: stripe/stripe-cli:latest
+    networks: 
+        - backend
+    command: "listen --api-key ${STRIPE_API_KEY} --device-name ${STRIPE_DEVICE_NAME} --forward-to ordering.api:8080/api/v1/payment-webhook"
+    env_file:
+        - .env
+    ports:
+        - 5006:8080
 
   ordering.api:
     image: ${DOCKER_REGISTRY-}orderingapi
@@ -89,3 +110,4 @@ services:
     depends_on:
         - rabbitmq
         - identity.api
+  
