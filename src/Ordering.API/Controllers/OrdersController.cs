@@ -39,10 +39,10 @@ namespace Ordering.API.Controllers
             {
                 return NotFound("Order not found");
             }
-            
+
             return Ok(OrderMapper.ToOrderDetailDTO(order));
         }
-        [HttpGet("user/{userId}")]
+        [HttpGet("buyer/{buyerId}")]
         public async Task<IActionResult> GetOrdersFromBuyerAsync([FromRoute] Guid buyerId, [FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
         {
             var orders = await _orderRepository.GetOrdersFromUserAsync(buyerId, pageIndex, pageSize);
@@ -173,7 +173,7 @@ namespace Ordering.API.Controllers
             await _publishEndpoint.Publish(new OrderStockValidatonEvent
             {
                 OrderId = (int)order.Id,
-                OrderItems = createOrderDTO.orderItems.Select(i => new OrderItemSimplified { BookId = (int)i.BookId, Quantity = (int)i.Quantity})
+                OrderItems = createOrderDTO.orderItems.Select(i => new OrderItemSimplified { BookId = (int)i.BookId, Quantity = (int)i.Quantity })
             });
 
             return Ok(order);
@@ -234,7 +234,7 @@ namespace Ordering.API.Controllers
                 });
                 _logger.LogInformation($"Finished publishing OrderRestockEvent with order id {order.Id}");
             }
-            
+
             if (order.OrderStatusId == OrderStatus.ORDER_SHIPPED || order.OrderStatusId == OrderStatus.ORDER_PAID)
             {
                 // Refund

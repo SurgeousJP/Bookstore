@@ -66,6 +66,7 @@ namespace Ordering.API.Extensions
 
             builder.Services.AddScoped<IBuyerRepository, BuyerRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             // Add Db context for catalog
             builder.Services.AddDbContext<OrderContext>(options =>

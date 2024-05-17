@@ -51,5 +51,36 @@ namespace BookCatalog.API.Queries.Mappers
             Quantity = orderItemDTO.Quantity,
             ImageUrl = orderItemDTO.ImageUrl,
         };
+
+        public static Transaction ToTransaction(CreateTransactionDTO transaction) => new Transaction
+        {
+            BuyerId = transaction.BuyerId,
+            TotalAmount = transaction.TotalAmount,
+            PaymentMethodId = transaction.PaymentMethodId,
+            Status = transaction.Status,
+            CreatedAt = transaction.CreatedAt,
+            UpdatedAt = transaction.UpdatedAt
+        };
+
+        public static Transaction ToTransactionFromDTO(TransactionDetailDTO transaction) => new Transaction
+        {
+            Id = transaction.Id,
+            BuyerId = transaction.BuyerId,
+            TotalAmount = transaction.TotalAmount,
+            PaymentMethodId = transaction.PaymentMethodId,
+            Status = transaction.Status,
+            CreatedAt = transaction.CreatedAt,
+        };
+
+        public static TransactionDetailDTO ToTransactionDetailDTO(Transaction transaction) => new TransactionDetailDTO
+        {
+            Id = transaction.Id,
+            BuyerId = transaction.BuyerId,
+            TotalAmount = transaction.TotalAmount,
+            PaymentMethodId = transaction.PaymentMethodId,
+            Status = transaction.Status,
+            CreatedAt = transaction.CreatedAt,
+            BuyerName = transaction.Buyer != null ? transaction.Buyer.Name : "",
+        };
     }
 }

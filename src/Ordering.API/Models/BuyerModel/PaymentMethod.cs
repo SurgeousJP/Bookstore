@@ -33,9 +33,12 @@ public partial class PaymentMethod
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
     public PaymentMethod() { }
 
-    public PaymentMethod (
+    public PaymentMethod(
         long cardTypeId, string alias, string cardNumber,
         string securityNumber, string cardHolderName, DateOnly expiration)
     {

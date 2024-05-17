@@ -18,10 +18,12 @@ public partial class Buyer
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
     public PaymentMethod VerifyOrAddPaymentMethod(PaymentMethodDTO paymentMethod)
     {
         var existingPayment = PaymentMethods.SingleOrDefault(p =>
-               p.CardTypeId == paymentMethod.CardTypeId 
+               p.CardTypeId == paymentMethod.CardTypeId
             && p.CardNumber == paymentMethod.CardNumber
             && p.Expiration == paymentMethod.Expiration);
 

@@ -30,6 +30,8 @@ public partial class OrderContext : DbContext
 
     public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
 
+    public virtual DbSet<Transaction> Transactions { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -177,6 +179,29 @@ public partial class OrderContext : DbContext
             entity.HasOne(d => d.CardType).WithMany(p => p.PaymentMethods)
                 .HasForeignKey(d => d.CardTypeId)
                 .HasConstraintName("public_payment_method_card_type_id_fkey");
+        });
+
+        modelBuilder.Entity<Transaction>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("transaction_pkey");
+
+            entity.ToTable("transactions");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.TotalAmount).HasColumnName("total_amount");
+            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.PaymentMethodId).HasColumnName("payment_method_id");
+            entity.Property(e => e.BuyerId).HasColumnName("buyer_id");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Buyer).WithMany(b => b.Transactions)
+                .HasForeignKey(d => d.BuyerId)
+                .HasConstraintName("public_transaction_buyer_id_fkey");
+
+            entity.HasOne(d => d.PaymentMethod).WithMany(p => p.Transactions)
+                .HasForeignKey(d => d.PaymentMethodId)
+                .HasConstraintName("public_transaction_payment_method_id_fkey");
         });
 
         OnModelCreatingPartial(modelBuilder);
