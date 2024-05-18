@@ -1,7 +1,7 @@
-﻿using System.Linq.Expressions;
-using BookCatalog.API.Infrastructure;
+﻿using BookCatalog.API.Infrastructure;
 using BookCatalog.API.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace BookCatalog.API.Repositories
 {
@@ -71,6 +71,7 @@ namespace BookCatalog.API.Repositories
 
         public virtual async Task Update(T entity)
         {
+            context.ChangeTracker.Clear();
             context.Update(entity);
         }
 

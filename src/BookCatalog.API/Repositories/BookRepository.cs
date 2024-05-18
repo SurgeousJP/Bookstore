@@ -111,7 +111,9 @@ namespace BookCatalog.API.Repositories
         }
 
         public async override Task Update(Book updateBook)
-        {  
+        {
+            context.ChangeTracker.Clear();
+
             var currentBook = await context.Set<Book>().AsQueryable()
                 .Where(book => book.Id == updateBook.Id)
                 .Include(book => book.BookGenres)
