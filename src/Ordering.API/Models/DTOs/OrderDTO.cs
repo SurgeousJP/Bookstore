@@ -18,8 +18,6 @@
 
         public float? TotalAmount { get; set; }
 
-        public long? ShippingId { get; set; }
-
         public string? BuyerName { get; set; }
 
         public string? OrderStatusName { get; set; }

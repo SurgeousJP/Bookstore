@@ -1,6 +1,4 @@
-﻿using Ordering.API.Models.OrderModel;
-
-namespace Ordering.API.Models.DTOs
+﻿namespace Ordering.API.Models.DTOs
 {
     public class OrderDetailDTO
     {
@@ -36,7 +34,7 @@ namespace Ordering.API.Models.DTOs
 
         public string BuyerName { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public IEnumerable<OrderItemDTO> OrderItems { get; set; }
 
         public string OrderStatusName { get; set; }
 

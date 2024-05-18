@@ -43,6 +43,7 @@ namespace Ordering.API.Repositories
         {
             var order = await _context.Orders
                 .Where(o => o.Id == orderId)
+                .Include(o => o.Buyer)
                 .Include(o => o.OrderItems)
                 .Include(o => o.PaymentMethod)
                 .Include(o => o.Address)
@@ -55,14 +56,13 @@ namespace Ordering.API.Repositories
         public async Task<PaginatedItems<Order>> GetOrders(int pageIndex, int pageSize)
         {
             var query = _context.Set<Order>().AsQueryable()
-                 .OrderBy(order => order.Id);
+                 .OrderBy(order => order.Id)
+                 .Include(o => o.Buyer)
+                 .Include(o => o.OrderStatus)
+                 .Skip(pageIndex * pageSize)
+                 .Take(pageSize);
 
             var totalItems = await query.LongCountAsync();
-
-            if (pageIndex >= 0 && pageSize > 0)
-            {
-                query = (IOrderedQueryable<Order>)query.Skip(pageIndex * pageSize).Take(pageSize);
-            }
 
             var itemsInPage = await query.ToListAsync();
 
@@ -76,15 +76,13 @@ namespace Ordering.API.Repositories
         public async Task<PaginatedItems<Order>> GetOrdersFromUserAsync(Guid buyerId, int pageIndex, int pageSize)
         {
             var query = _context.Set<Order>().AsQueryable()
-                 .OrderBy(order => order.OrderDate)
-                 .Where(order => order.BuyerId == buyerId);
+                 .OrderBy(order => order.Id)
+                 .Include(o => o.Buyer)
+                 .Include(o => o.OrderStatus)
+                 .Skip(pageIndex * pageSize)
+                 .Take(pageSize);
 
             var totalItems = await query.LongCountAsync();
-
-            if (pageIndex >= 0 && pageSize > 0)
-            {
-                query = (IOrderedQueryable<Order>)query.Skip(pageIndex * pageSize).Take(pageSize);
-            }
 
             var itemsInPage = await query.ToListAsync();
 

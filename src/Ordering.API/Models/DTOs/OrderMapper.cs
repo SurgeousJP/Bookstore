@@ -6,81 +6,113 @@ namespace BookCatalog.API.Queries.Mappers
     public static class OrderMapper
 
     {
-        public static OrderDTO ToOrderDTO(Order order) => new OrderDTO
+        public static OrderDTO ToOrderDTO(Order order)
         {
-            Id = order.Id,
-            AddressId = order.AddressId,
-            BuyerId = order.BuyerId,
-            OrderStatusId = order.OrderStatusId,
-            Description = order.Description,
-            PaymentMethodId = order.PaymentMethodId,
-            OrderDate = order.OrderDate,
-            TotalAmount = order.TotalAmount,
-            BuyerName = order.Buyer.Name,
-            OrderStatusName = order.OrderStatus.Name
-        };
+            return new OrderDTO
+            {
+                Id = order.Id,
+                AddressId = order.AddressId,
+                BuyerId = order.BuyerId,
+                OrderStatusId = order.OrderStatusId,
+                Description = order.Description,
+                PaymentMethodId = order.PaymentMethodId,
+                OrderDate = order.OrderDate,
+                TotalAmount = order.TotalAmount,
+                BuyerName = order.Buyer != null ? order.Buyer.Name : "",
+                OrderStatusName = order.OrderStatus != null ? order.OrderStatus.Name : ""
+            };
+        }
 
-        public static OrderDetailDTO ToOrderDetailDTO(Order order) => new OrderDetailDTO
+        public static OrderDetailDTO ToOrderDetailDTO(Order order)
         {
-            Id = order.Id,
-            AddressId = order.AddressId,
-            BuyerId = order.BuyerId,
-            OrderStatusId = order.OrderStatusId,
-            Description = order.Description,
-            PaymentMethodId = order.PaymentMethodId,
-            OrderDate = order.OrderDate,
-            TotalAmount = order.TotalAmount,
-            Street = order.Address.Street,
-            Ward = order.Address.Ward,
-            City = order.Address.City,
-            Country = order.Address.Country,
-            ZipCode = order.Address.ZipCode,
-            BuyerName = order.Buyer.Name,
-            OrderItems = order.OrderItems,
-            OrderStatusName = order.OrderStatus.Name,
-            PaymentMethodName = order.PaymentMethod.Alias
-        };
+            return new OrderDetailDTO
+            {
+                Id = order.Id,
+                AddressId = order.AddressId,
+                BuyerId = order.BuyerId,
+                OrderStatusId = order.OrderStatusId,
+                Description = order.Description,
+                PaymentMethodId = order.PaymentMethodId,
+                OrderDate = order.OrderDate,
+                TotalAmount = order.TotalAmount,
+                Street = order.Address.Street,
+                Ward = order.Address.Ward,
+                City = order.Address.City,
+                Country = order.Address.Country,
+                ZipCode = order.Address.ZipCode,
+                BuyerName = order.Buyer != null ? order.Buyer.Name : "",
+                OrderItems = order.OrderItems.Select(oi => OrderMapper.ToOrderItemDTO(oi)),
+                OrderStatusName = order.OrderStatus != null ? order.OrderStatus.Name : "",
+                PaymentMethodName = order.PaymentMethod != null ? order.PaymentMethod.Alias : ""
+            };
+        }
 
-        public static OrderItem ToOrderItem(OrderItemDTO orderItemDTO) => new OrderItem
+        public static OrderItem ToOrderItem(OrderItemDTO orderItemDTO)
         {
-            BookId = orderItemDTO.BookId,
-            Title = orderItemDTO.Title,
-            UnitPrice = orderItemDTO.UnitPrice,
-            OldUnitPrice = orderItemDTO.OldUnitPrice,
-            TotalUnitPrice = orderItemDTO.TotalUnitPrice,
-            Quantity = orderItemDTO.Quantity,
-            ImageUrl = orderItemDTO.ImageUrl,
-        };
+            return new OrderItem
+            {
+                BookId = orderItemDTO.BookId,
+                Title = orderItemDTO.Title,
+                UnitPrice = orderItemDTO.UnitPrice,
+                OldUnitPrice = orderItemDTO.OldUnitPrice,
+                TotalUnitPrice = orderItemDTO.TotalUnitPrice,
+                Quantity = orderItemDTO.Quantity,
+                ImageUrl = orderItemDTO.ImageUrl,
+            };
+        }
 
-        public static Transaction ToTransaction(CreateTransactionDTO transaction) => new Transaction
+        public static OrderItemDTO ToOrderItemDTO(OrderItem orderItemDTO)
         {
-            BuyerId = transaction.BuyerId,
-            TotalAmount = transaction.TotalAmount,
-            PaymentMethodId = transaction.PaymentMethodId,
-            Status = transaction.Status,
-            CreatedAt = transaction.CreatedAt,
-            UpdatedAt = transaction.UpdatedAt
-        };
+            return new OrderItemDTO
+            {
+                BookId = orderItemDTO.BookId,
+                Title = orderItemDTO.Title,
+                UnitPrice = orderItemDTO.UnitPrice,
+                OldUnitPrice = orderItemDTO.OldUnitPrice,
+                TotalUnitPrice = orderItemDTO.TotalUnitPrice,
+                Quantity = orderItemDTO.Quantity,
+                ImageUrl = orderItemDTO.ImageUrl,
+            };
+        }
 
-        public static Transaction ToTransactionFromDTO(TransactionDetailDTO transaction) => new Transaction
+        public static Transaction ToTransaction(CreateTransactionDTO transaction)
         {
-            Id = transaction.Id,
-            BuyerId = transaction.BuyerId,
-            TotalAmount = transaction.TotalAmount,
-            PaymentMethodId = transaction.PaymentMethodId,
-            Status = transaction.Status,
-            CreatedAt = transaction.CreatedAt,
-        };
+            return new Transaction
+            {
+                BuyerId = transaction.BuyerId,
+                TotalAmount = transaction.TotalAmount,
+                PaymentMethodId = transaction.PaymentMethodId,
+                Status = transaction.Status,
+                CreatedAt = transaction.CreatedAt,
+                UpdatedAt = transaction.UpdatedAt
+            };
+        }
 
-        public static TransactionDetailDTO ToTransactionDetailDTO(Transaction transaction) => new TransactionDetailDTO
+        public static Transaction ToTransactionFromDTO(TransactionDetailDTO transaction)
         {
-            Id = transaction.Id,
-            BuyerId = transaction.BuyerId,
-            TotalAmount = transaction.TotalAmount,
-            PaymentMethodId = transaction.PaymentMethodId,
-            Status = transaction.Status,
-            CreatedAt = transaction.CreatedAt,
-            BuyerName = transaction.Buyer != null ? transaction.Buyer.Name : "",
-        };
+            return new Transaction
+            {
+                Id = transaction.Id,
+                BuyerId = transaction.BuyerId,
+                TotalAmount = transaction.TotalAmount,
+                PaymentMethodId = transaction.PaymentMethodId,
+                Status = transaction.Status,
+                CreatedAt = transaction.CreatedAt,
+            };
+        }
+
+        public static TransactionDetailDTO ToTransactionDetailDTO(Transaction transaction)
+        {
+            return new TransactionDetailDTO
+            {
+                Id = transaction.Id,
+                BuyerId = transaction.BuyerId,
+                TotalAmount = transaction.TotalAmount,
+                PaymentMethodId = transaction.PaymentMethodId,
+                Status = transaction.Status,
+                CreatedAt = transaction.CreatedAt,
+                BuyerName = transaction.Buyer != null ? transaction.Buyer.Name : "",
+            };
+        }
     }
 }

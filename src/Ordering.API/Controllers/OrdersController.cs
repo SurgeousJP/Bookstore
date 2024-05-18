@@ -66,7 +66,7 @@ namespace Ordering.API.Controllers
         {
             var orders = await _orderRepository.GetOrders(pageIndex, pageSize);
 
-            if (orders == null || orders.TotalItems == 0)
+            if (orders.Data == null || orders.Data.Count == 0)
             {
                 return NotFound("Orders not found");
             }
