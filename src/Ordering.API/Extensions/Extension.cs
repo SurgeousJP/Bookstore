@@ -21,6 +21,64 @@ namespace Ordering.API.Extensions
 {
     public static class Extension
     {
+        public static string MapIntToDayOfWeek(int dayOfWeekNumber)
+        {
+            switch (dayOfWeekNumber)
+            {
+                case 0:
+                    return "Sunday";
+                case 1:
+                    return "Monday";
+                case 2:
+                    return "Tuesday";
+                case 3:
+                    return "Wednesday";
+                case 4:
+                    return "Thursday";
+                case 5:
+                    return "Friday";
+                case 6:
+                    return "Saturday";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(dayOfWeekNumber), "Day of week number must be between 0 and 6.");
+            }
+        }
+
+
+        public static string MapIntToMonth(int monthNumber)
+        {
+            switch (monthNumber)
+            {
+                case 1:
+                    return "January";
+                case 2:
+                    return "February";
+                case 3:
+                    return "March";
+                case 4:
+                    return "April";
+                case 5:
+                    return "May";
+                case 6:
+                    return "June";
+                case 7:
+                    return "July";
+                case 8:
+                    return "August";
+                case 9:
+                    return "September";
+                case 10:
+                    return "October";
+                case 11:
+                    return "November";
+                case 12:
+                    return "December";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(monthNumber), "Month number must be between 1 and 12.");
+            }
+        }
+
+
         public static void AddApplicationServices(this IHostApplicationBuilder builder)
         {
             // Add services to the container.

@@ -1,4 +1,5 @@
 ﻿using Ordering.API.Model;
+using Ordering.API.Models;
 using Ordering.API.Models.OrderModel;
 
 namespace Ordering.API.Repositories
@@ -12,5 +13,7 @@ namespace Ordering.API.Repositories
         public Task<PaginatedItems<Transaction>> GetTransactions(int pageIndex, int pageSize);
         public void DeleteTransaction(Transaction transaction);
         public Task SaveChangesAsync();
+        public Task<List<WeeklyTransactionSummary>> GetTransactionsByWeek();
+        public Task<List<MonthlyTransactionSummary>> GetTransactionsByMonth();
     }
 }

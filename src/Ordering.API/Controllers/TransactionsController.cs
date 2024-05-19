@@ -12,10 +12,10 @@ namespace Ordering.API.Controllers
 
     public class TransactionsController : ControllerBase
     {
-        private readonly ILogger<OrdersController> _logger;
+        private readonly ILogger<TransactionsController> _logger;
         private readonly ITransactionRepository _transactionRepository;
 
-        public TransactionsController(ILogger<OrdersController> logger, ITransactionRepository transactionRepository)
+        public TransactionsController(ILogger<TransactionsController> logger, ITransactionRepository transactionRepository)
         {
             _logger = logger;
             _transactionRepository = transactionRepository;
@@ -69,6 +69,32 @@ namespace Ordering.API.Controllers
                 transactions.Data.Select(
                     transaction => OrderMapper.ToTransactionDetailDTO(transaction))
                 .ToList()));
+        }
+
+        [HttpGet("week")]
+        public async Task<IActionResult> GetTransactionsByWeek()
+        {
+            var transactionsByWeek = await _transactionRepository.GetTransactionsByWeek();
+
+            if (transactionsByWeek == null)
+            {
+                return NotFound("Transactions not found");
+            }
+
+            return Ok(transactionsByWeek);
+        }
+
+        [HttpGet("month")]
+        public async Task<IActionResult> GetTransactionsByMonth()
+        {
+            var transactionsByWeek = await _transactionRepository.GetTransactionsByMonth();
+
+            if (transactionsByWeek == null)
+            {
+                return NotFound("Transactions not found");
+            }
+
+            return Ok(transactionsByWeek);
         }
 
         [HttpPost("")]

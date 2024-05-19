@@ -9,6 +9,7 @@ namespace BookCatalog.API.Repositories
 {
     public class BookRepository : GenericRepository<Book>, IRepository<Book>
     {
+        private const string BOOK_ID_PREFIX = "BookID_";
         protected readonly ILogger<BookRepository> logger;
         public BookRepository(BookContext context, ILogger<BookRepository> logger) : base(context)
         {
@@ -26,8 +27,8 @@ namespace BookCatalog.API.Repositories
                 .Where(
                 b
                 => EF.Functions.ILike(b.Title, '%' + searchWord + '%')
-                || EF.Functions.ILike(b.Description, '%' + searchWord + '%')
                 || EF.Functions.ILike(b.AuthorName, '%' + searchWord + '%')
+                || EF.Functions.ILike(b.Description, '%' + searchWord + '%')
                 )
                 .OrderBy(b => b.Id);
 

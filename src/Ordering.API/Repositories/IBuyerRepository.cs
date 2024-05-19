@@ -9,5 +9,6 @@ namespace Ordering.API.Repositories
         public Task<Buyer> FindAsync(Guid identityGuid);
         public Task<IEnumerable<Cardtype>> GetAllCardTypes();
         public Task SaveChangeAsync();
+        public Task<long> LongCountAsync();
     }
 }

@@ -22,14 +22,14 @@ public partial class Address
     public Guid? BuyerId { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    public virtual ICollection<Order>? Orders { get; set; } = new List<Order>();
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public virtual Buyer? Buyer { get; set; }
 
     public Address() { }
-    
-    public Address (string street, string? ward, string? district, string? city, string? country, string? zipCode, Guid? buyerId)
+
+    public Address(string street, string? ward, string? district, string? city, string? country, string? zipCode, Guid? buyerId)
     {
         Street = street;
         Ward = ward;

@@ -19,15 +19,17 @@ namespace Ordering.API.Controllers
     {
         private readonly IBuyerRepository _buyerRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly ITransactionRepository _transactionRepository;
         private readonly ILogger<OrdersController> _logger;
         private readonly IPublishEndpoint _publishEndpoint;
 
-        public OrdersController(IBuyerRepository buyerRepository, IOrderRepository orderRepository, ILogger<OrdersController> logger, IPublishEndpoint publishEndpoint)
+        public OrdersController(IBuyerRepository buyerRepository, IOrderRepository orderRepository, ILogger<OrdersController> logger, IPublishEndpoint publishEndpoint, ITransactionRepository transactionRepository)
         {
             _buyerRepository = buyerRepository;
             _orderRepository = orderRepository;
             _logger = logger;
             _publishEndpoint = publishEndpoint;
+            _transactionRepository = transactionRepository;
         }
 
         [HttpGet("{orderId}")]
@@ -108,6 +110,23 @@ namespace Ordering.API.Controllers
             return Ok(orderStatus);
         }
 
+        [HttpGet("report")]
+        public async Task<IActionResult> GetReportMetrics()
+        {
+            var totalBuyers = await _buyerRepository.LongCountAsync();
+            var orders = await _orderRepository.GetOrders(0, 10);
+            var totalOrders = orders.TotalItems;
+            var transactions = await _transactionRepository.GetTransactions(0, 10);
+            var totalRevenue = transactions.Data.Sum(transaction => transaction.TotalAmount);
+
+            return Ok(new
+            {
+                CustomerCount = totalBuyers,
+                OrderCount = totalOrders,
+                TotalRevenue = totalRevenue,
+            });
+        }
+
         [HttpPost("")]
         public async Task<IActionResult> CreateOrderFromBasket([FromBody] CreateOrderDTO createOrderDTO)
         {
@@ -176,7 +195,7 @@ namespace Ordering.API.Controllers
                 OrderItems = createOrderDTO.orderItems.Select(i => new OrderItemSimplified { BookId = (int)i.BookId, Quantity = (int)i.Quantity })
             });
 
-            return Ok(order);
+            return Ok(OrderMapper.ToOrderDetailDTO(order));
         }
 
         [HttpPatch("{orderId}/status/{orderStatusId}")]

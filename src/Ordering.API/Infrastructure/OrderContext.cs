@@ -9,12 +9,17 @@ public partial class OrderContext : DbContext
 {
     public OrderContext()
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
     }
 
     public OrderContext(DbContextOptions<OrderContext> options)
         : base(options)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
+
+
 
     public virtual DbSet<Address> Addresses { get; set; }
 

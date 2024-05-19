@@ -1,3 +1,4 @@
+using Npgsql;
 using Ordering.API.Extensions;
 using Ordering.API.Middleware;
 

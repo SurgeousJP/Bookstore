@@ -33,7 +33,7 @@ namespace Ordering.API.Repositories
         public Buyer Update(Buyer buyer)
         {
             _context.Buyers.Update(buyer);
-            return buyer; 
+            return buyer;
         }
 
         public async Task<IEnumerable<Cardtype>> GetAllCardTypes()
@@ -46,6 +46,11 @@ namespace Ordering.API.Repositories
         public async Task SaveChangeAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<long> LongCountAsync()
+        {
+            return await _context.Buyers.LongCountAsync();
         }
     }
 }
