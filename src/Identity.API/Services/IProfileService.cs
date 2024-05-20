@@ -13,5 +13,8 @@ namespace Identity.API.Services
         public Task<IdentityResult> DeleteUserProfileAsync(string userId);
 
         public Task<IdentityResult> UpdatePasswordAsync(string userId, string currentPassword, string newPassword);
+
+        public Task<string> GetResetToken(string email);
+        public Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword);
     }
 }

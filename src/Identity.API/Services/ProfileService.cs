@@ -106,5 +106,33 @@ namespace Identity.API.Services
                 Description = string.Join(", ", result.Errors.Select(e => e.Description))
             });
         }
+
+        public async Task<string> GetResetToken(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return "";
+            }
+
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Code = "UserNotFound",
+                    Description = "User with the provided email does not exist."
+                });
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+            return result;
+        }
     }
 }

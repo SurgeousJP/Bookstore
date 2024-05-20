@@ -41,7 +41,8 @@ builder.Services.AddDbContext<IdentityContext>(opts =>
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<IdentityContext>();
+    .AddEntityFrameworkStores<IdentityContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddTransient<ILoginService<ApplicationUser>, LoginService>();
 builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddEndpointsApiExplorer();

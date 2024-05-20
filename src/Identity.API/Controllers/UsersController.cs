@@ -25,19 +25,51 @@ namespace Identity.API.Controllers
             this.emailConfiguration = emailConfiguration;
         }
 
-        [HttpGet("email_test")]
-        public async Task<IEnumerable<int>> Get()
+        [HttpPost("resetpass-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetPasswordResetToken([FromBody] string email)
         {
-            var rng = new Random();
+            var resetPassToken = await profileService.GetResetToken(email);
+            if (string.IsNullOrEmpty(resetPassToken))
+            {
+                return BadRequest("The email input is not matched with any of users");
+            }
 
-            var message = new Message(new string[] { "21520620@gm.uit.edu.vn" }, "Test email async", "This is the content from our async email.");
+            var message = new Message(new string[]
+            { email },
+            "Password recovery mail",
+            "Dear [User],\r\nIt seems you've requested assistance in resetting your password. We're here to help you securely regain access to your account.." +
+            $"\r\n Here is your token for reset your password: {resetPassToken}");
+
             await emailSender.SendEmailAsync(message);
 
-            return Enumerable.Range(1, 5).Select(index => index)
-            .ToArray();
+            return Ok("A token is generated and has been sent to your email, please check your inbox for password recovery token");
         }
 
-        [HttpPost("{userId}/password")]
+        [HttpPost("resetpass")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ResetPasswordForUser([FromBody] ResetPasswordDTO resetPasswordDTO)
+        {
+            var resetIdentityResult = await profileService.ResetPasswordAsync(resetPasswordDTO.Email, resetPasswordDTO.ResetToken, resetPasswordDTO.NewPassword);
+
+            if (!resetIdentityResult.Succeeded)
+            {
+                string errorString = "";
+                foreach (var error in resetIdentityResult.Errors)
+                {
+                    errorString = errorString + error + "\n";
+                }
+                return BadRequest($"User password change failed, error: {errorString}");
+            }
+
+            return Ok(resetIdentityResult);
+        }
+
+        [HttpPost("{userId}/update-password")]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
