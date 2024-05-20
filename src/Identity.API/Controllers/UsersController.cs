@@ -1,8 +1,7 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.API.Controllers
 {
@@ -13,13 +12,55 @@ namespace Identity.API.Controllers
         private IProfileService profileService;
         private ILoginService<ApplicationUser> loginService;
         private IJwtBuilder jwtBuilder;
+        private IEmailSender emailSender;
+        private EmailConfiguration emailConfiguration;
 
         public UsersController(IProfileService profileService, ILoginService<ApplicationUser> loginService,
-            IJwtBuilder jwtBuilder)
+            IJwtBuilder jwtBuilder, IEmailSender emailSender, EmailConfiguration emailConfiguration)
         {
             this.profileService = profileService;
             this.loginService = loginService;
             this.jwtBuilder = jwtBuilder;
+            this.emailSender = emailSender;
+            this.emailConfiguration = emailConfiguration;
+        }
+
+        [HttpGet("email_test")]
+        public async Task<IEnumerable<int>> Get()
+        {
+            var rng = new Random();
+
+            var message = new Message(new string[] { "21520620@gm.uit.edu.vn" }, "Test email async", "This is the content from our async email.");
+            await emailSender.SendEmailAsync(message);
+
+            return Enumerable.Range(1, 5).Select(index => index)
+            .ToArray();
+        }
+
+        [HttpPost("{userId}/password")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdatePasswordForUser([FromRoute] string userId, [FromBody] UpdatePasswordDTO updatePasswordDTO)
+        {
+            if (string.IsNullOrEmpty(userId) || updatePasswordDTO.isAnyAttributeNullOrEmpty())
+            {
+                return BadRequest("One or more attributes required is empty or null");
+            }
+
+            var updateIdentityResult = await profileService.UpdatePasswordAsync(userId, updatePasswordDTO.CurrentPassword, updatePasswordDTO.NewPassword);
+
+            if (!updateIdentityResult.Succeeded)
+            {
+                string errorString = "";
+                foreach (var error in updateIdentityResult.Errors)
+                {
+                    errorString = errorString + error + "\n";
+                }
+                return BadRequest($"User password change failed, error: {errorString}");
+            }
+
+            return Ok(updateIdentityResult);
         }
 
         [HttpPost("login")]
@@ -69,7 +110,7 @@ namespace Identity.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Validate([FromQuery(Name = "username")] string username, [FromQuery(Name= "token")] string token)
+        public async Task<IActionResult> Validate([FromQuery(Name = "username")] string username, [FromQuery(Name = "token")] string token)
         {
             var user = await loginService.FindByUsername(username);
 
@@ -150,7 +191,7 @@ namespace Identity.API.Controllers
             return Ok(updateIdentityResult);
         }
 
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

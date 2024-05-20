@@ -1,10 +1,9 @@
 using Identity.API.Data;
+using Identity.API.Extensions;
+using Identity.API.Models;
+using Identity.API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Identity.API.Extensions;
-using Identity.API.Services;
-using Identity.API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -28,30 +27,28 @@ builder.Services.Configure<IdentityOptions>(opts =>
     opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
 });
 
+var emailConfig = builder.Configuration
+        .GetSection("EmailConfiguration")
+        .Get<EmailConfiguration>();
+
+builder.Services.AddSingleton<EmailConfiguration>(emailConfig);
+
 builder.Services.AddDbContext<IdentityContext>(opts =>
 {
     opts.UseNpgsql(builder.Configuration["ConnectionStrings:IdentityConnection"]);
     opts.EnableSensitiveDataLogging();
 });
 
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<IdentityContext>();
 builder.Services.AddTransient<ILoginService<ApplicationUser>, LoginService>();
 builder.Services.AddTransient<IProfileService, ProfileService>();
-
-//builder.Services.AddAuthentication(opts => {
-//    opts.DefaultScheme =
-//    CookieAuthenticationDefaults.AuthenticationScheme;
-//    opts.DefaultChallengeScheme =
-//    CookieAuthenticationDefaults.AuthenticationScheme;
-//}).AddCookie(opts => {
-//    opts.Events.DisableRedirectForPath(e => e.OnRedirectToLogin,
-//    "/api", StatusCodes.Status401Unauthorized);
-//    opts.Events.DisableRedirectForPath(e => e.OnRedirectToAccessDenied,
-//    "/api", StatusCodes.Status403Forbidden);
-//});
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
+
+app.MapAPI_File();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

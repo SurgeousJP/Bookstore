@@ -11,5 +11,7 @@ namespace Identity.API.Services
         public Task<IdentityResult> UpdateUserProfileAsync(string userId, UserUpdateDTO user);
 
         public Task<IdentityResult> DeleteUserProfileAsync(string userId);
+
+        public Task<IdentityResult> UpdatePasswordAsync(string userId, string currentPassword, string newPassword);
     }
 }

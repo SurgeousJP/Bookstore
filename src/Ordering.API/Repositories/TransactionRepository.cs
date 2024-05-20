@@ -77,9 +77,11 @@ namespace Ordering.API.Repositories
                 transaction => transaction.CreatedAt.Date,
                 (date, transactions) => new WeeklyTransactionSummary
                 {
+                    DayOfWeekNumber = date.DayOfWeek.ToString(),
                     DayOfWeek = Extension.MapIntToDayOfWeek(int.Parse(date.DayOfWeek.ToString())),
                     TotalAmount = transactions.Sum(transaction => transaction.TotalAmount)
                 })
+                .OrderBy(transaction => transaction.DayOfWeekNumber)
                 .ToListAsync();
 
             return weeklyTransactionSummary;
@@ -101,9 +103,11 @@ namespace Ordering.API.Repositories
                 transaction => transaction.CreatedAt.Month,
                 (month, transactions) => new MonthlyTransactionSummary
                 {
+                    MonthOfYearNumber = month,
                     MonthOfYear = Extension.MapIntToMonth(month),
                     TotalAmount = transactions.Sum(transaction => transaction.TotalAmount)
                 })
+                .OrderBy(transaction => transaction.MonthOfYearNumber)
                 .ToListAsync();
 
             return PeriodTransactionSummary;
