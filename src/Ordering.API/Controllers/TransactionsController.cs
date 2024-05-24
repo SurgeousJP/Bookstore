@@ -1,9 +1,9 @@
-﻿using BookCatalog.API.Queries.Mappers;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Ordering.API.Model;
+using Ordering.API.Models;
 using Ordering.API.Models.DTOs;
 using Ordering.API.Models.OrderModel;
-using Ordering.API.Repositories;
+using Ordering.API.Repositories.Contracts;
 
 namespace Ordering.API.Controllers
 {

@@ -16,5 +16,7 @@ namespace Identity.API.Services
 
         public Task<string> GetResetToken(string email);
         public Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword);
+
+        public Task<PaginatedItems<ApplicationUser>> GetUsersByPage(string searchString = "", int pageIndex = 0, int pageSize = 10);
     }
 }

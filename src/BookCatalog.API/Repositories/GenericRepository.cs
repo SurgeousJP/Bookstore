@@ -77,12 +77,18 @@ namespace BookCatalog.API.Repositories
 
         public virtual async Task Remove(T entity)
         {
+            context.ChangeTracker.Clear();
             context.Remove(entity);
         }
 
         public async Task<long> LongCountAsync()
         {
             return await context.Set<T>().LongCountAsync();
+        }
+
+        public virtual async Task<List<string>> GetConstants()
+        {
+            return null;
         }
     }
 }

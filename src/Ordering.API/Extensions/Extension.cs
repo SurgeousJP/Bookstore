@@ -10,7 +10,7 @@ using Ordering.API.Infrastructure;
 using Ordering.API.Middleware;
 using Ordering.API.Model;
 using Ordering.API.Repositories;
-using Ordering.API.Services;
+using Ordering.API.Repositories.Contracts;
 using Stripe;
 using System.Globalization;
 using System.Text;
@@ -88,7 +88,6 @@ namespace Ordering.API.Extensions
             builder.Services.AddJwtAuthentication(builder.Configuration);
             builder.Services.AddMvc().AddNewtonsoftJson();
 
-
             // Swagger genereator
             builder.Services.AddSwaggerGen(c =>
             {
@@ -125,6 +124,8 @@ namespace Ordering.API.Extensions
             builder.Services.AddScoped<IBuyerRepository, BuyerRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+            builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+            builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
             // Add Db context for catalog
             builder.Services.AddDbContext<OrderContext>(options =>

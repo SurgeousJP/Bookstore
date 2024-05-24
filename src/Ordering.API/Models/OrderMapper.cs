@@ -1,7 +1,9 @@
-﻿using Ordering.API.Models.DTOs;
+﻿using Ordering.API.BuyerModel;
+using Ordering.API.Models.BuyerModel;
+using Ordering.API.Models.DTOs;
 using Ordering.API.Models.OrderModel;
 
-namespace BookCatalog.API.Queries.Mappers
+namespace Ordering.API.Models
 {
     public static class OrderMapper
 
@@ -41,7 +43,7 @@ namespace BookCatalog.API.Queries.Mappers
                 Country = order.Address.Country,
                 ZipCode = order.Address.ZipCode,
                 BuyerName = order.Buyer != null ? order.Buyer.Name : "",
-                OrderItems = order.OrderItems.Select(oi => OrderMapper.ToOrderItemDTO(oi)),
+                OrderItems = order.OrderItems.Select(oi => ToOrderItemDTO(oi)),
                 OrderStatusName = order.OrderStatus != null ? order.OrderStatus.Name : "",
                 PaymentMethodName = order.PaymentMethod != null ? order.PaymentMethod.Alias : ""
             };
@@ -112,6 +114,63 @@ namespace BookCatalog.API.Queries.Mappers
                 Status = transaction.Status,
                 CreatedAt = transaction.CreatedAt,
                 BuyerName = transaction.Buyer != null ? transaction.Buyer.Name : "",
+            };
+        }
+
+        public static Address ToAddress(AddressDTO addressDTO)
+        {
+            return new Address
+            {
+                Street = addressDTO.Street,
+                City = addressDTO.City,
+                Ward = addressDTO.Ward,
+                District = addressDTO.District,
+                Country = addressDTO.Country,
+                ZipCode = addressDTO.ZipCode,
+                BuyerId = addressDTO.BuyerId
+            };
+        }
+
+        public static AddressDTO ToAddressDTO(Address address)
+        {
+            return new AddressDTO
+            {
+                Id = (int)address.Id,
+                Street = address.Street,
+                City = address.City,
+                Ward = address.Ward,
+                District = address.District,
+                Country = address.Country,
+                ZipCode = address.ZipCode,
+                BuyerId = address.BuyerId
+            };
+        }
+
+        public static PaymentMethod ToPaymentMethod(PaymentMethodDTO paymentMethodDTO)
+        {
+            return new PaymentMethod
+            {
+                Alias = paymentMethodDTO.Alias,
+                CardNumber = paymentMethodDTO.CardNumber,
+                SecurityNumber = paymentMethodDTO.SecurityNumber,
+                CardHoldername = paymentMethodDTO.CardHoldername,
+                Expiration = paymentMethodDTO.Expiration,
+                CardTypeId = paymentMethodDTO.CardTypeId,
+            };
+        }
+
+        public static PaymentMethodDTO ToPaymentMethodDTO(PaymentMethod paymentMethodDTO)
+        {
+            return new PaymentMethodDTO
+            {
+                Id = paymentMethodDTO.Id,
+                Alias = paymentMethodDTO.Alias,
+                CardNumber = paymentMethodDTO.CardNumber,
+                SecurityNumber = paymentMethodDTO.SecurityNumber,
+                CardHoldername = paymentMethodDTO.CardHoldername,
+                Expiration = paymentMethodDTO.Expiration,
+                CardTypeId = paymentMethodDTO.CardTypeId,
+                CardTypeName = paymentMethodDTO.CardType.Name ?? ""
             };
         }
     }

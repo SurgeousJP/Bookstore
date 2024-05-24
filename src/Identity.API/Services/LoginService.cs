@@ -30,15 +30,18 @@ namespace Identity.API.Services
             await _signInManager.SignOutAsync();
         }
 
-        public async Task SignIn(ApplicationUser user)
+        public async Task<string> SignIn(ApplicationUser user)
         {
             var authProperties = new AuthenticationProperties
             {
-               ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(180),
-               IsPersistent = true,
-               RedirectUri = "To be added later on"
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(180),
+                IsPersistent = true,
+                RedirectUri = "To be added later on"
             };
             await SignInAsync(user, authProperties);
+
+            var userRole = await _userManager.GetRolesAsync(user);
+            return userRole.FirstOrDefault() ?? "not available";
         }
 
         public Task SignInAsync(ApplicationUser user, AuthenticationProperties properties, string authenticationMethod = null)

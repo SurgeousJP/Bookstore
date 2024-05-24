@@ -114,10 +114,10 @@ namespace BookCatalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> DeleteBookReview([FromBody] DeleteBookReviewDTO dto)
+        public async Task<IActionResult> DeleteBookReview([FromQuery] Guid userId, [FromQuery] int bookId)
         {
             var existingReviewPage = await _reviewsRepository.FindAsync(
-                b => b.UserId == dto.UserId && b.BookId == dto.BookId,
+                b => b.UserId == userId && b.BookId == bookId,
                 0,
                 5);
 
@@ -128,7 +128,8 @@ namespace BookCatalog.API.Controllers
                 return NotFound("Review not found for deletion");
             }
 
-            await _reviewsRepository.Remove(new BookReview { BookId = dto.BookId, UserId = dto.UserId});
+            await _reviewsRepository.Remove(new BookReview { BookId = bookId, UserId = userId});
+            await _reviewsRepository.SaveChangesAsync();
 
             return Ok("Review deleted successfully");
         }

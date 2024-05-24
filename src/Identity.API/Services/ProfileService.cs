@@ -134,5 +134,33 @@ namespace Identity.API.Services
             var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
             return result;
         }
+
+        public async Task<PaginatedItems<ApplicationUser>> GetUsersByPage(string searchString, int pageIndex = 0, int pageSize = 10)
+        {
+            var allUsersInRole = await _userManager.GetUsersInRoleAsync("Customer");
+
+            // Filter users based on search string
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                allUsersInRole = allUsersInRole.Where(user =>
+                    (!string.IsNullOrEmpty(user.UserName) && user.UserName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrEmpty(user.Email) && user.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrEmpty(user.FullName) && user.FullName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            }
+
+            var totalUsersInRole = allUsersInRole.Count;
+            var usersInRolePage = allUsersInRole
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PaginatedItems<ApplicationUser>(
+                pageIndex,
+                pageSize,
+                totalUsersInRole,
+                usersInRolePage
+            );
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Ordering.API.Services
+﻿namespace Ordering.API.Repositories.Contracts
 {
     public interface IJwtBuilder
     {

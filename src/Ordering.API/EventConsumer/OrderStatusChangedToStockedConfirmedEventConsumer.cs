@@ -1,7 +1,7 @@
 ﻿using EventBus.Messaging.Events;
 using MassTransit;
 using Ordering.API.Models.OrderModel;
-using Ordering.API.Repositories;
+using Ordering.API.Repositories.Contracts;
 
 namespace Ordering.API.EventConsumer
 {

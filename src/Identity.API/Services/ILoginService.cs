@@ -8,7 +8,7 @@ namespace Identity.API.Services
 
         Task<T> FindByUsername(string username);
 
-        Task SignIn(T user);
+        Task<string> SignIn(T user);
 
         Task SignInAsync(T user, AuthenticationProperties properties, string authenticationMethod = null);
 

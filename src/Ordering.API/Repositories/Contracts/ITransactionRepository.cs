@@ -1,8 +1,8 @@
 ﻿using Ordering.API.Model;
-using Ordering.API.Models;
 using Ordering.API.Models.OrderModel;
+using Ordering.API.Models.ReportModel;
 
-namespace Ordering.API.Repositories
+namespace Ordering.API.Repositories.Contracts
 {
     public interface ITransactionRepository
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ordering.API.Infrastructure;
 using Ordering.API.Models.BuyerModel;
+using Ordering.API.Repositories.Contracts;
 
 namespace Ordering.API.Repositories
 {

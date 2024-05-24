@@ -17,5 +17,6 @@ namespace BookCatalog.API.Repositories
         Task Remove(T entity);
         Task SaveChangesAsync();
         Task<long> LongCountAsync();
+        Task<List<string>> GetConstants();
     }
 }

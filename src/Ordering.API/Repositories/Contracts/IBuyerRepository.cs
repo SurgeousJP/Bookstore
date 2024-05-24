@@ -1,6 +1,6 @@
 ﻿using Ordering.API.Models.BuyerModel;
 
-namespace Ordering.API.Repositories
+namespace Ordering.API.Repositories.Contracts
 {
     public interface IBuyerRepository
     {

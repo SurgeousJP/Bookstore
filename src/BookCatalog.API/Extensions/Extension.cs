@@ -53,18 +53,19 @@ namespace BookCatalog.API.Extensions
             }); ;
 
             // Add repositories
-            builder.Services.AddTransient<IRepository<Genre>, GenreRepository>();
-            builder.Services.AddTransient<IRepository<Book>, BookRepository>();
-            builder.Services.AddTransient<IRepository<BookFormat>, FormatRepository>();
-            builder.Services.AddTransient<IRepository<BookPublisher>, PublisherRepository>();
-            builder.Services.AddTransient<IRepository<BookReview>, ReviewsRepository>();
-
+            builder.Services.AddScoped<IRepository<Genre>, GenreRepository>();
+            builder.Services.AddScoped<IRepository<Book>, BookRepository>();
+            builder.Services.AddScoped<IRepository<BookFormat>, FormatRepository>();
+            builder.Services.AddScoped<IRepository<BookPublisher>, PublisherRepository>();
+            builder.Services.AddScoped<IRepository<BookReview>, ReviewsRepository>();
             // Add Db context for catalog
-            builder.Services.AddDbContext<BookContext>(options => {
+            builder.Services.AddDbContext<BookContext>(options =>
+            {
                 options.UseNpgsql(
                     builder.Configuration["ConnectionStrings:BookCatalog"
                     ]);
                 options.EnableSensitiveDataLogging();
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
             builder.Services.AddMassTransit(config =>
@@ -72,8 +73,9 @@ namespace BookCatalog.API.Extensions
                 config.AddConsumer<OrderRestockEventConsumer>();
                 config.AddConsumer<OrderStatusChangedToPaidEventConsumer>();
                 config.AddConsumer<OrderStockValidationEventConsumer>();
-                   
-                config.UsingRabbitMq((ctx, cfg) => {
+
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
                     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
 
                     cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.OrderRestockedQueue, c =>

@@ -2,6 +2,8 @@
 using Ordering.API.Infrastructure;
 using Ordering.API.Model;
 using Ordering.API.Models.OrderModel;
+using Ordering.API.Models.ReportModel;
+using Ordering.API.Repositories.Contracts;
 
 namespace Ordering.API.Repositories
 {
@@ -91,6 +93,29 @@ namespace Ordering.API.Repositories
                 pageSize,
                 totalItems,
                 itemsInPage);
+        }
+
+        public async Task<List<TopProduct>> GetTopTenProducts()
+        {
+            var topProducts = await _context.OrderItems
+                    .Join(_context.Orders,
+                          oi => oi.OrderId,
+                          o => o.Id,
+                          (oi, o) => new { OrderItem = oi, Order = o })
+                    .Where(x => x.Order.OrderStatusId == OrderStatus.ORDER_SHIPPED)
+                    .GroupBy(x => x.OrderItem.BookId)
+                    .Select(g => new TopProduct
+                    {
+                        BookId = (int)g.Key,
+                        Title = g.First().OrderItem.Title,
+                        TotalQuantityBought = (int)g.Sum(x => x.OrderItem.Quantity)
+
+                    })
+                    .OrderByDescending(x => x.TotalQuantityBought)
+                    .Take(10)
+                    .ToListAsync();
+
+            return topProducts;
         }
 
         public async Task SaveChangesAsync()

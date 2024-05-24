@@ -8,6 +8,8 @@ namespace Identity.API.Models
         // Card information
         public string Id;
 
+        public string? UserName { get; set; }
+
         [RegularExpression(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$", ErrorMessage = "Invalid email format.")]
         public string? Email { get; set; }
 
@@ -15,34 +17,34 @@ namespace Identity.API.Models
         public string? PhoneNumber { get; set; }
 
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Full name can only contain letters")]
-        public string? CardFullName;
+        public string? CardFullName { get; set; }
 
         [CreditCard]
-        public string? CardNumber;
+        public string? CardNumber { get; set; }
 
         [RegularExpression(@"^\d{3}$", ErrorMessage = "Invalid CVC")]
-        public string? CardCVC;
+        public string? CardCVC { get; set; }
 
-        public DateOnly? ExpirationDate;
+        public DateOnly? ExpirationDate { get; set; }
 
         // Shipping information
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "First name can only contain letters")]
-        public string? FirstName;
+        public string? FirstName { get; set; }
 
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Last name can only contain letters")]
-        public string? LastName;
+        public string? LastName { get; set; }
 
         [StringLength(100)]
-        public string? Address;
+        public string? Address { get; set; }
 
         // Image
-        public string? ProfileImageLink;
+        public string? ProfileImageLink { get; set; }
 
         // Basic information
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Full name can only contain letters")]
-        public string? FullName;
+        public string? FullName { get; set; }
 
-        public string? Country;
+        public string? Country { get; set; }
 
         public string? City;
 
@@ -53,6 +55,11 @@ namespace Identity.API.Models
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
+            }
+
+            if (UserName != null)
+            {
+                user.UserName = UserName;
             }
 
             // Update identity information

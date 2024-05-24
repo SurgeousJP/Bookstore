@@ -1,14 +1,14 @@
-﻿using BookCatalog.API.Queries.Mappers;
-using EventBus.Messaging.Events;
+﻿using EventBus.Messaging.Events;
 using EventBus.Messaging.SharedModel;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ordering.API.Model;
+using Ordering.API.Models;
 using Ordering.API.Models.BuyerModel;
 using Ordering.API.Models.DTOs;
 using Ordering.API.Models.OrderModel;
-using Ordering.API.Repositories;
+using Ordering.API.Repositories.Contracts;
 
 namespace Ordering.API.Controllers
 {
@@ -261,6 +261,19 @@ namespace Ordering.API.Controllers
 
             await UpdateOrderStatusAsync(orderId, OrderStatus.ORDER_STATUS_CANCELLED);
             return Ok("Order status changed to cancelled");
+        }
+
+        [HttpGet("top-10-products")]
+        public async Task<IActionResult> GetTopTenProducts()
+        {
+            var topProducts = await _orderRepository.GetTopTenProducts();
+
+            if (topProducts == null || topProducts.Count == 0)
+            {
+                return BadRequest("There are no top products available");
+            }
+
+            return Ok(topProducts);
         }
     }
 }

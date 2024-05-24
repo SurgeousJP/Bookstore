@@ -1,6 +1,5 @@
 ﻿using Identity.API.Models;
 using Identity.API.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.API.Controllers
@@ -23,6 +22,14 @@ namespace Identity.API.Controllers
             this.jwtBuilder = jwtBuilder;
             this.emailSender = emailSender;
             this.emailConfiguration = emailConfiguration;
+        }
+
+        [HttpGet("")]
+        public async Task<IActionResult> GetUsersByPage([FromQuery] string? searchTerm, [FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 10)
+        {
+            var users = await profileService.GetUsersByPage(searchTerm, pageIndex, pageSize);
+
+            return Ok(users);
         }
 
         [HttpPost("resetpass-token")]
@@ -79,6 +86,19 @@ namespace Identity.API.Controllers
             {
                 return BadRequest("One or more attributes required is empty or null");
             }
+            var currentUser = await profileService.GetUserProfileAsync(userId);
+
+            if (currentUser == null)
+            {
+                return BadRequest("User id not found");
+            }
+
+            var checkPass = await loginService.ValidateCredentials(currentUser, updatePasswordDTO.CurrentPassword);
+
+            if (!checkPass)
+            {
+                return BadRequest("User password not matched, please try again");
+            }
 
             var updateIdentityResult = await profileService.UpdatePasswordAsync(userId, updatePasswordDTO.CurrentPassword, updatePasswordDTO.NewPassword);
 
@@ -87,7 +107,7 @@ namespace Identity.API.Controllers
                 string errorString = "";
                 foreach (var error in updateIdentityResult.Errors)
                 {
-                    errorString = errorString + error + "\n";
+                    errorString = errorString + error.Description + "\n";
                 }
                 return BadRequest($"User password change failed, error: {errorString}");
             }
@@ -119,18 +139,18 @@ namespace Identity.API.Controllers
                 return BadRequest("The password is incorrect, please try again");
             }
 
-            await loginService.SignIn(user);
+            var role = await loginService.SignIn(user);
 
             var token = jwtBuilder.GetToken(user.Id);
 
             return Ok(new
             {
                 Message = $"The user {user.Id} is logged into the system",
-                Token = token
+                Token = token,
+                Role = role
             });
         }
 
-        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> LogoutUser()
         {
@@ -186,8 +206,7 @@ namespace Identity.API.Controllers
             return Ok($"User with {user.Username} has been created, with userId: {userId}");
         }
 
-        [Authorize]
-        [HttpGet("{userId}")]
+        [HttpGet("profile/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
@@ -201,7 +220,6 @@ namespace Identity.API.Controllers
             return Ok(userProfile);
         }
 
-        [Authorize]
         [HttpPatch("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -223,7 +241,7 @@ namespace Identity.API.Controllers
             return Ok(updateIdentityResult);
         }
 
-        [Authorize(Roles = "Admin")]
+
         [HttpDelete("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

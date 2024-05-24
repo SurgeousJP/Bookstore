@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Ordering.API.Models
+namespace Ordering.API.Models.ReportModel
 {
     public class WeeklyTransactionSummary
     {

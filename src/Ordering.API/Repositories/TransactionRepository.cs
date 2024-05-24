@@ -2,8 +2,9 @@
 using Ordering.API.Extensions;
 using Ordering.API.Infrastructure;
 using Ordering.API.Model;
-using Ordering.API.Models;
 using Ordering.API.Models.OrderModel;
+using Ordering.API.Models.ReportModel;
+using Ordering.API.Repositories.Contracts;
 
 namespace Ordering.API.Repositories
 {
@@ -42,7 +43,7 @@ namespace Ordering.API.Repositories
         public async Task<PaginatedItems<Transaction>> GetTransactions(int pageIndex, int pageSize)
         {
             var query = _context.Set<Transaction>().AsQueryable()
-                 .OrderBy(transaction => transaction.Id);
+                 .OrderByDescending(transaction => transaction.CreatedAt);
 
             var totalItems = await query.LongCountAsync();
 

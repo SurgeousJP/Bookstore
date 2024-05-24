@@ -1,4 +1,4 @@
-﻿using Ordering.API.Services;
+﻿using Ordering.API.Repositories.Contracts;
 
 namespace Ordering.API.Middleware
 {

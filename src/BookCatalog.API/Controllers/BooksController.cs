@@ -1,11 +1,11 @@
 ﻿using BookCatalog.API.Model;
-using Microsoft.AspNetCore.Mvc;
-using BookCatalog.API.Repositories;
 using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
-using Microsoft.AspNetCore.Authorization;
+using BookCatalog.API.Repositories;
 using EventBus.Messaging.Events;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BookCatalog.API.Controllers
 {
@@ -55,13 +55,29 @@ namespace BookCatalog.API.Controllers
             }
         }
 
+        [HttpGet("lang-codes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetAllLanguageCodeAsync()
+        {
+            var langCodes = await bookRepository.GetConstants();
+
+            if (langCodes == null || langCodes.Count == 0)
+            {
+                return NotFound("Language codes not found");
+            }
+
+            return Ok(langCodes);
+        }
+
         [HttpGet("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> GetBooksAsync(
             [FromQuery] int pageIndex = 0,
-            [FromQuery] int pageSize = 10 
+            [FromQuery] int pageSize = 10
             )
         {
             var totalItems = await bookRepository.LongCountAsync();
@@ -93,10 +109,10 @@ namespace BookCatalog.API.Controllers
             [FromQuery] int pageIndex = 0,
             [FromQuery] int pageSize = 10
             )
-        {      
+        {
             var itemsOnPageQuery = await bookRepository.FindAsync(
                BookFilter.BuildFilterPredicate(filter),
-                pageIndex, 
+                pageIndex,
                 pageSize);
 
             if (itemsOnPageQuery.Data == null || itemsOnPageQuery.Data.Count == 0)
@@ -110,7 +126,7 @@ namespace BookCatalog.API.Controllers
                     itemsOnPageQuery.PageSize,
                     itemsOnPageQuery.TotalItems,
                     itemsOnPageQuery.Data.Select(
-                        book => BookMapper.ToBookGeneralInfoDTO(book)).ToList())); 
+                        book => BookMapper.ToBookGeneralInfoDTO(book)).ToList()));
             }
         }
 
@@ -182,11 +198,11 @@ namespace BookCatalog.API.Controllers
                 await bookRepository.SaveChangesAsync();
                 return Ok("Book updated successfully");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
 
         //[Authorize(Roles = "Admin")]

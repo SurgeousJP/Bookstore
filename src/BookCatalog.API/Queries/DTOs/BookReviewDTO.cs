@@ -15,5 +15,7 @@ namespace BookCatalog.API.Queries.DTOs
         public string? Comment { get; set; }
 
         public decimal? RatingPoint { get; set; }
+
+        public string? CreationDate { get; set; }
     }
 }

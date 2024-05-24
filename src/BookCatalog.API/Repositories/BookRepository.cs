@@ -139,6 +139,8 @@ namespace BookCatalog.API.Repositories
 
         public async override Task Remove(Book removeBook)
         {
+            context.ChangeTracker.Clear();
+
             var currentBook = await context.Set<Book>().AsQueryable()
                 .Where(book => book.Id == removeBook.Id)
                 .FirstOrDefaultAsync();
@@ -154,6 +156,14 @@ namespace BookCatalog.API.Repositories
                 context.Remove(new Book { Id = removeBook.Id });
                 logger.LogInformation($"Succesfully removed book with id: {removeBook.Id}");
             }
+        }
+
+        public async override Task<List<string>> GetConstants()
+        {
+            return await context.Books
+                .Select(b => b.LanguageCode)
+                .Distinct()
+                .ToListAsync();
         }
     }
 }

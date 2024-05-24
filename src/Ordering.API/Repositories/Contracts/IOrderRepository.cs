@@ -1,7 +1,8 @@
 ﻿using Ordering.API.Model;
 using Ordering.API.Models.OrderModel;
+using Ordering.API.Models.ReportModel;
 
-namespace Ordering.API.Repositories
+namespace Ordering.API.Repositories.Contracts
 {
     public interface IOrderRepository
     {
@@ -14,5 +15,7 @@ namespace Ordering.API.Repositories
         public void DeleteOrder(Order order);
         public Task SaveChangesAsync();
         public Task<ICollection<OrderStatus>> GetAllOrderStatus();
+        public Task<List<TopProduct>> GetTopTenProducts();
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Runtime.InteropServices;
 using System.ComponentModel.DataAnnotations;
 
 namespace Identity.API.Models
@@ -8,42 +7,31 @@ namespace Identity.API.Models
     {
         // Identity supports Username, Email, PasswordHash, PhoneNumber
         // Card information
-
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Full name can only contain letters")]
-        public string? CardFullName;
+        public string? CardFullName { get; set; }
 
         [CreditCard]
-        public string? CardNumber;
+        public string? CardNumber { get; set; }
 
-        [RegularExpression(@"^\d{3}$", ErrorMessage = "Invalid CVC")]
-        public string? CardCVC;
+        public string? CardCVC { get; set; }
 
-        public DateOnly? ExpirationDate;
+        public DateOnly? ExpirationDate { get; set; }
 
-        // Shipping information
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "First name can only contain letters")]
-        public string? FirstName;
+        public string? FirstName { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Last name can only contain letters")]
-        public string? LastName;
+        public string? LastName { get; set; }
 
-        [StringLength(100)]
-        public string? Address;
+        public string? Address { get; set; }
 
-        // Image
-        public string? ProfileImageLink;
+        public string? ProfileImageLink { get; set; }
 
-        // Basic information
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Full name can only contain letters")]
-        public string FullName;
-        // Constraint right at frontend
-        [Required]
-        public string Country;
-        [Required]
-        public string City;
-        [Required]
-        public string Timezone;
-        [Required] 
-        public string Role;
+        public string? FullName { get; set; }
+
+        public string? Country { get; set; }
+
+        public string? City { get; set; }
+
+        public string? Timezone { get; set; }
+
+        public string? Role { get; set; }
     }
 }
