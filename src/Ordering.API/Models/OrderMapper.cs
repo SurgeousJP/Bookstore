@@ -174,5 +174,27 @@ namespace Ordering.API.Models
                 CardTypeName = paymentMethodDTO.CardType.Name ?? ""
             };
         }
+
+        public static void MapAddress(Address source, Address target)
+        {
+            target.Id = source.Id;
+            target.Street = source.Street;
+            target.Ward = source.Ward;
+            target.District = source.District;
+            target.City = source.City;
+            target.Country = source.Country;
+            target.ZipCode = source.ZipCode;
+            target.BuyerId = source.BuyerId;
+        }
+
+        public static void MapPaymentMethod(PaymentMethod source, PaymentMethod target)
+        {
+            target.Alias = source.Alias;
+            target.CardNumber = source.CardNumber;
+            target.SecurityNumber = source.SecurityNumber;
+            target.CardHoldername = source.CardHoldername;
+            target.Expiration = source.Expiration;
+            target.CardTypeId = source.CardTypeId;
+        }
     }
 }

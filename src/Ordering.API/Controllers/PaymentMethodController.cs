@@ -33,7 +33,7 @@ namespace Ordering.API.Controllers
             }
 
 
-            _logger.LogInformation("Begin create payment method and address");
+            _logger.LogInformation("Begin create payment method");
             var buyerPaymentMethod = buyer.VerifyOrAddPaymentMethod(addPaymentMethod);
             await _buyerRepository.SaveChangeAsync();
 
@@ -73,9 +73,10 @@ namespace Ordering.API.Controllers
                 return NotFound("Payment method not found for update");
             }
 
-            await _paymentMethodRepository.UpdatePaymentMethod(OrderMapper.ToPaymentMethod(updatePaymentMethod));
+            OrderMapper.MapPaymentMethod(OrderMapper.ToPaymentMethod(updatePaymentMethod), existingMethod);
+            await _paymentMethodRepository.UpdatePaymentMethod(existingMethod);
 
-            return Ok("Review updated successfully");
+            return Ok("Payment method updated successfully");
         }
 
         [HttpDelete("{id}")]

@@ -73,7 +73,8 @@ namespace Ordering.API.Controllers
                 return NotFound("Address not found for update");
             }
 
-            await _addressRepository.UpdateAddress(OrderMapper.ToAddress(updateAddress));
+            OrderMapper.MapAddress(OrderMapper.ToAddress(updateAddress), existingMethod);
+            await _addressRepository.UpdateAddress(existingMethod);
 
             return Ok("Address updated successfully");
         }
