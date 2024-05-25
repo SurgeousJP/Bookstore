@@ -71,16 +71,16 @@ services:
     networks:
         - backend
 
-  # chatbot:
-  #   image: ${DOCKER_REGISTRY-}chatbot
-  #   container_name: chatbot
-  #   ports:
-  #       - 5007:8080
-  #   build:
-  #       context: ..\src\ChatbotAPI
-  #       dockerfile: Dockerfile
-  #   networks:
-  #       - backend
+  chatbot:
+    image: ${DOCKER_REGISTRY-}chat_bot
+    container_name: chatbot
+    ports:
+        - 5007:8080
+    build:
+        context: ..\src\ChatbotAPI
+        dockerfile: Dockerfile
+    networks:
+        - backend
  
   rabbitmq:
     image: rabbitmq:3-management-alpine
