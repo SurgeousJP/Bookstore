@@ -121,6 +121,7 @@ namespace Ordering.API.Models
         {
             return new Address
             {
+                Id = addressDTO.Id,
                 Street = addressDTO.Street,
                 City = addressDTO.City,
                 Ward = addressDTO.Ward,
