@@ -1,0 +1,29 @@
+# Virtual environment
+venv/
+env/
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+
+# Ignore logs
+*.log
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Ignore environment variables file (if used)
+.env
+
+# Ignore any local configuration files
+config.ini
+
+*.csv
+
+# Cache folder
+cache/

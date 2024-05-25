@@ -1,0 +1,13 @@
+python-dotenv
+Flask
+google-generativeai
+pymongo
+sentence_transformers
+# Uncomment these lines if needed
+# datasets
+# pandas
+# -U transformers
+# accelerate
+# torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+# langchain_google_genai
+# langchain
