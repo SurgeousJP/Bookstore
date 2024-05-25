@@ -70,12 +70,12 @@ namespace Ordering.API.Controllers
 
             if (existingMethod == null)
             {
-                return NotFound("Payment method not found for update");
+                return NotFound("Address not found for update");
             }
 
             await _addressRepository.UpdateAddress(OrderMapper.ToAddress(updateAddress));
 
-            return Ok("Review updated successfully");
+            return Ok("Address updated successfully");
         }
 
         [HttpDelete("{id}")]
@@ -85,12 +85,12 @@ namespace Ordering.API.Controllers
 
             if (existingMethod == null)
             {
-                return NotFound("Payment method not found for deletion");
+                return NotFound("Address not found for deletion");
             }
 
             await _addressRepository.DeleteAddress(new Address { Id = id });
 
-            return Ok("Payment method deleted successfully");
+            return Ok("deleted successfully");
         }
     }
 }
