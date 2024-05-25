@@ -37,7 +37,7 @@ namespace Ordering.API.Controllers
             var buyerAddress = buyer.VerifyOrAddAddress(addAddress);
             await _buyerRepository.SaveChangeAsync();
 
-            return Ok(buyerAddress);
+            return Ok(OrderMapper.ToAddressDTO(buyerAddress));
         }
 
         [HttpGet("{buyerId}")]
