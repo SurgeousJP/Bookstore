@@ -3,12 +3,11 @@ using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
 using BookCatalog.API.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookCatalog.API.Controllers
 {
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles = "Admin")]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class GenresController : ControllerBase
@@ -26,8 +25,9 @@ namespace BookCatalog.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> GetGenresAsync(
-            [FromQuery]int pageIndex = 0, 
-            [FromQuery]int pageSize = 10){
+            [FromQuery] int pageIndex = 0,
+            [FromQuery] int pageSize = 10)
+        {
             var totalGenres = await genreRepository.LongCountAsync();
 
             var genresInPage = await genreRepository.GetAllAsync(pageIndex, pageSize);
@@ -56,7 +56,7 @@ namespace BookCatalog.API.Controllers
             return Ok(genre);
         }
 
-        [HttpPatch("")] 
+        [HttpPatch("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
@@ -79,7 +79,7 @@ namespace BookCatalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> DeleteGenreAsync([FromQuery]int id)
+        public async Task<IActionResult> DeleteGenreAsync([FromQuery] int id)
         {
             var existingGenre = await genreRepository.GetItemByIdAsync(id);
 

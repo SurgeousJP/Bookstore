@@ -8,6 +8,10 @@ public partial class Genre
 
     public string Name { get; set; } = null!;
 
+    // Add Genre Image URL
+
+    public string ImageUrl {  get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public virtual ICollection<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
 }

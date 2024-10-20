@@ -110,8 +110,9 @@ namespace BookCatalog.API.Controllers
             [FromQuery] int pageSize = 10
             )
         {
+            var predicate = BookFilter.BuildFilterPredicate(filter);
             var itemsOnPageQuery = await bookRepository.FindAsync(
-               BookFilter.BuildFilterPredicate(filter),
+                predicate,
                 pageIndex,
                 pageSize);
 

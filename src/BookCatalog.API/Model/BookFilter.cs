@@ -1,4 +1,4 @@
-﻿using BookCatalog.API.Extensions;
+﻿using Catalog.API.Extensions;
 using System.Linq.Expressions;
 
 namespace BookCatalog.API.Model
@@ -46,4 +46,5 @@ namespace BookCatalog.API.Model
             }
             return filterExpression;
         }
-    }}
+    }
+}

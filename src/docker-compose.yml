@@ -60,27 +60,27 @@ services:
     networks:
         - backend
 
-  contentrecsys:
-    image: ${DOCKER_REGISTRY-}contentrecsys
-    container_name: contentrecsys
-    ports:
-        - 5004:8080
-    build:
-      context: ..\src\ContentRecSys
-      dockerfile: Dockerfile
-    networks:
-        - backend
+  # contentrecsys:
+  #   image: ${DOCKER_REGISTRY-}contentrecsys
+  #   container_name: contentrecsys
+  #   ports:
+  #       - 5004:8080
+  #   build:
+  #     context: ..\src\ContentRecSys
+  #     dockerfile: Dockerfile
+  #   networks:
+  #       - backend
 
-  chatbot:
-    image: ${DOCKER_REGISTRY-}chat_bot
-    container_name: chatbot
-    ports:
-        - 5007:8080
-    build:
-        context: ..\src\ChatbotAPI
-        dockerfile: Dockerfile
-    networks:
-        - backend
+  # chatbot:
+  #   image: ${DOCKER_REGISTRY-}chat_bot
+  #   container_name: chatbot
+  #   ports:
+  #       - 5007:8080
+  #   build:
+  #       context: ..\src\ChatbotAPI
+  #       dockerfile: Dockerfile
+  #   networks:
+  #       - backend
  
   rabbitmq:
     image: rabbitmq:3-management-alpine

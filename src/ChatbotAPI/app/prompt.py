@@ -7,3 +7,4 @@ prompt_template = ("You are an AI-powered assistant supporting users on an onlin
             "helping users find the information they need. You can use the search results to generate a response that "
             "best matches the user query. Remember to provide accurate and relevant information to enhance the user "
             "experience. /n/n User Query: {query} /n/n Search Results: {source_information}")
+

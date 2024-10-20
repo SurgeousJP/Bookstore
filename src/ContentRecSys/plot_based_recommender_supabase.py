@@ -44,6 +44,7 @@ tfidf_matrix = tfidf.fit_transform(books_df['combined'])
 
 feature_names = tfidf.get_feature_names_out()
 logging.info(f"TF-IDF matrix shape: {tfidf_matrix.shape}")
+tfidf_matrix.shape
 
 # Cosine similarity function for comparing every two documents
 logging.info("Calculating cosine similarity matrix")
