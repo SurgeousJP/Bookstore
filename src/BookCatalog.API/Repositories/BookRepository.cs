@@ -2,6 +2,7 @@
 using BookCatalog.API.Infrastructure;
 using BookCatalog.API.Model;
 using BookCatalog.API.Queries.Mappers;
+using Catalog.API.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -19,18 +20,29 @@ namespace BookCatalog.API.Repositories
 
         public override async Task<PaginatedItems<Book>> SearchAsync(
             string searchWord,
+            Expression<Func<Book, bool>> predicate,
+            bool isDescending,
             int pageIndex = 0,
             int pageSize = 10
             )
         {
-            var query = context.Set<Book>().AsQueryable()
-                .Where(
-                b
+            Expression<Func<Book, bool>> searchPredicate = b
                 => EF.Functions.ILike(b.Title, '%' + searchWord + '%')
                 || EF.Functions.ILike(b.AuthorName, '%' + searchWord + '%')
-                || EF.Functions.ILike(b.Description, '%' + searchWord + '%')
-                )
-                .OrderBy(b => b.Id);
+                || EF.Functions.ILike(b.Description, '%' + searchWord + '%');
+
+            predicate = predicate.And(searchPredicate);
+
+            var query = context.Set<Book>().AsQueryable().Where(predicate);
+
+            if (isDescending)
+            {
+                query = query.OrderByDescending(book => book.Price);
+            }
+            else
+            {
+                query = query.OrderBy(book => book.Price);
+            }
 
             var totalItems = await query.LongCountAsync();
 
@@ -48,36 +60,27 @@ namespace BookCatalog.API.Repositories
                 itemsInPage);
         }
 
-        public async override Task<PaginatedItems<Book>> FindAsync(
-            Expression<Func<Book, bool>> predicate,
-            int pageIndex = 0,
-            int pageSize = 10)
+        public override async Task<PaginatedItems<Book>> FindAsync(
+                    Expression<Func<Book, bool>> predicate,
+                    bool isDescending,
+                    int pageIndex = 0,
+                    int pageSize = 10)
         {
-
-            var query = context.Set<Book>().AsQueryable()
-                .Where(predicate)
-                .OrderBy(book => book.Id)
-                ;
+            var query = context.Set<Book>().AsQueryable().Where(predicate);
 
             var totalItems = await query.LongCountAsync();
 
             if (pageIndex >= 0 && pageSize > 0)
             {
-                query = (IOrderedQueryable<Book>)query.Skip(pageIndex * pageSize).Take(pageSize);
+                query = query.Skip(pageIndex * pageSize).Take(pageSize);
             }
 
-            var itemsInPage = await query.ToListAsync();
-
-            return new PaginatedItems<Book>(
-                pageIndex,
-                pageSize,
-                totalItems,
-                itemsInPage);
+            return new PaginatedItems<Book>(pageIndex, pageSize, totalItems, await query.ToListAsync());
         }
 
         public override async Task<PaginatedItems<Book>> GetAllAsync(
             int pageIndex = 0,
-            int pageSize = 0)
+            int pageSize = 10)
         {
             var query = context.Set<Book>().AsQueryable()
                  .OrderBy(book => book.Id);
@@ -158,7 +161,7 @@ namespace BookCatalog.API.Repositories
             }
         }
 
-        public async override Task<List<string>> GetConstants()
+        public async override Task<List<string?>> GetConstants()
         {
             return await context.Books
                 .Select(b => b.LanguageCode)

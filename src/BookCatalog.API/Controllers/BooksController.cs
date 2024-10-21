@@ -2,10 +2,12 @@
 using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
 using BookCatalog.API.Repositories;
+using Catalog.API.Extensions;
 using EventBus.Messaging.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace BookCatalog.API.Controllers
 {
@@ -30,11 +32,26 @@ namespace BookCatalog.API.Controllers
         [ProducesDefaultResponseType]
         public async Task<IActionResult> SearchBookAsync(
             [FromQuery] string searchWord,
+            [FromQuery] BookFilter filter,
             [FromQuery] int pageIndex = 0,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] int pageSize = 10,
+            [FromQuery] bool isPriceAscend = true,
+            [FromQuery] double startPrice = 0,
+            [FromQuery] double endPrice = 0
+            )
         {
+            var predicate = BookFilter.BuildFilterPredicate(filter);
+            Expression<Func<Book, bool>> pricePredicate = book => book.Price >= startPrice && book.Price <= endPrice;
+
+            if (startPrice > 0 && endPrice > 0 && startPrice < endPrice)
+            {
+                predicate = predicate.And(pricePredicate);
+            }
+
             var itemsOnPageQuery = await bookRepository.SearchAsync(
                 searchWord,
+                predicate,
+                !isPriceAscend,
                 pageIndex,
                 pageSize
                 );
@@ -107,12 +124,15 @@ namespace BookCatalog.API.Controllers
         public async Task<IActionResult> GetBooksByFilterAsync(
             [FromQuery] BookFilter filter,
             [FromQuery] int pageIndex = 0,
-            [FromQuery] int pageSize = 10
-            )
+            [FromQuery] int pageSize = 10,
+            [FromQuery] bool isPriceAscend = true)
         {
             var predicate = BookFilter.BuildFilterPredicate(filter);
+            Expression<Func<Book, object>> sortPredicate = book => book.Price;
+
             var itemsOnPageQuery = await bookRepository.FindAsync(
                 predicate,
+                !isPriceAscend,
                 pageIndex,
                 pageSize);
 

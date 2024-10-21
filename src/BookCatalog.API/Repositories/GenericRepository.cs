@@ -21,6 +21,8 @@ namespace BookCatalog.API.Repositories
 
         public virtual async Task<PaginatedItems<T>> SearchAsync(
             string searchWord,
+            Expression<Func<T, bool>> predicate,
+            bool isDescending,
             int pageIndex = 0,
             int pageSize = 10
             )
@@ -30,8 +32,9 @@ namespace BookCatalog.API.Repositories
 
         public async virtual Task<PaginatedItems<T>> FindAsync(
             Expression<Func<T, bool>> predicate,
+            bool isDescending,
             int pageIndex = 0,
-            int pageSize = 0)
+            int pageSize = 10)
         {
             var query = context.Set<T>().AsQueryable().Where(predicate);
 

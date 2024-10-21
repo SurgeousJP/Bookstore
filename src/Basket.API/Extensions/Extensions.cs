@@ -45,21 +45,30 @@ namespace Basket.API.Extensions
             }
         });
             });
-
+            var redisConfig = new ConfigurationOptions
+            {
+                EndPoints = { builder.Configuration["ConnectionStrings:Basket"] },
+                Password = builder.Configuration["ConnectionStrings:Password"],
+                AbortOnConnectFail = false,
+                ConnectRetry = 10,  // Retries before giving up
+                ConnectTimeout = 20000  // Timeout in milliseconds
+            };
             IConnectionMultiplexer redisServer =
-                ConnectionMultiplexer.Connect(builder.Configuration["ConnectionStrings:Basket"]);
+                ConnectionMultiplexer.Connect(redisConfig);
 
             builder.Services.AddSingleton(redisServer);
             builder.Services.AddSingleton<IBasketRepository, RedisBasketRepository>();
-            
+
             builder.Services.AddAuthorization();
             builder.Services.AddControllers();
 
-            builder.Services.AddMassTransit(config => {
+            builder.Services.AddMassTransit(config =>
+            {
                 config.AddConsumer<ProductPriceUpdateEventConsumer>();
                 config.AddConsumer<OrderStartedEventConsumer>();
 
-                config.UsingRabbitMq((ctx, cfg) => {
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
                     cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
 
                     cfg.ReceiveEndpoint(EventBus.Messaging.EventBusConstant.EventBusConstants.ProductUpdateQueue, c =>

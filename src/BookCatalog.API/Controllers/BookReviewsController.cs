@@ -35,12 +35,13 @@ namespace BookCatalog.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> GetBookReviewByUser(
-            [FromRoute] Guid userId, 
+            [FromRoute] Guid userId,
             [FromQuery] int pageIndex = 0,
             [FromQuery] int pageSize = 10)
         {
             var itemsOnPageQuery = await _reviewsRepository.FindAsync(
                 r => r.UserId == userId,
+                false,
                 pageIndex,
                 pageSize);
 
@@ -69,6 +70,7 @@ namespace BookCatalog.API.Controllers
         {
             var itemsOnPageQuery = await _reviewsRepository.FindAsync(
                 r => r.BookId == bookId,
+                false,
                 pageIndex,
                 pageSize);
 
@@ -94,6 +96,7 @@ namespace BookCatalog.API.Controllers
         {
             var existingReviewPage = await _reviewsRepository.FindAsync(
                 b => b.UserId == dto.UserId && b.BookId == dto.BookId,
+                false,
                 0,
                 5);
 
@@ -118,6 +121,7 @@ namespace BookCatalog.API.Controllers
         {
             var existingReviewPage = await _reviewsRepository.FindAsync(
                 b => b.UserId == userId && b.BookId == bookId,
+                false,
                 0,
                 5);
 
@@ -128,7 +132,7 @@ namespace BookCatalog.API.Controllers
                 return NotFound("Review not found for deletion");
             }
 
-            await _reviewsRepository.Remove(new BookReview { BookId = bookId, UserId = userId});
+            await _reviewsRepository.Remove(new BookReview { BookId = bookId, UserId = userId });
             await _reviewsRepository.SaveChangesAsync();
 
             return Ok("Review deleted successfully");
