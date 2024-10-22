@@ -2,7 +2,9 @@
 using BookCatalog.API.Queries.DTOs;
 using BookCatalog.API.Queries.Mappers;
 using BookCatalog.API.Repositories;
+using Catalog.API.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace BookCatalog.API.Controllers
 {
@@ -28,6 +30,47 @@ namespace BookCatalog.API.Controllers
             await _reviewsRepository.SaveChangesAsync();
 
             return Ok("Book review created successfully");
+        }
+
+        [HttpGet("")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetBookReviews(
+            [FromQuery] Guid userId
+            , [FromQuery] int bookId
+            , [FromQuery] int pageIndex = 0
+            , [FromQuery] int pageSize = 5)
+        {
+
+            Expression<Func<BookReview, bool>> filter = br => true;
+            if (!string.IsNullOrEmpty(userId.ToString()))
+            {
+                filter = filter.And(br => br.UserId == userId);
+            }
+            if (bookId > 0)
+            {
+                filter = filter.And(br => br.BookId == bookId);
+            }
+
+            var itemsOnPageQuery = await _reviewsRepository.FindAsync(
+                filter,
+                false,
+                pageIndex,
+                pageSize);
+
+            if (itemsOnPageQuery.Data == null || itemsOnPageQuery.Data.Count == 0)
+            {
+                return NotFound("Book reviews not found");
+            }
+            else
+            {
+                return Ok(new PaginatedItems<BookReview>(
+                    itemsOnPageQuery.PageIndex,
+                    itemsOnPageQuery.PageSize,
+                    itemsOnPageQuery.TotalItems,
+                    itemsOnPageQuery.Data));
+            }
         }
 
         [HttpGet("user/{userId}")]

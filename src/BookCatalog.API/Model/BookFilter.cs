@@ -9,9 +9,9 @@ namespace BookCatalog.API.Model
         public string? TitleWithoutSeries { get; set; }
         public string? Description { get; set; }
         public string[]? LanguageCodes { get; set; }
-        public int[]? FormatIds { get; set; }
+        public long[]? FormatIds { get; set; }
         public string? AuthorName { get; set; }
-        public int[]? GenreIds { get; set; }
+        public long[]? GenreIds { get; set; }
 
         public static Expression<Func<Book, bool>> BuildFilterPredicate(BookFilter filter)
         {
@@ -42,7 +42,8 @@ namespace BookCatalog.API.Model
             }
             if (filter.GenreIds != null && filter.GenreIds.Length > 0)
             {
-                filterExpression = filterExpression.And(book => filter.GenreIds.Any(filter => book.BookGenres.Any(bg => bg.GenreId == filter)));
+                var genreIds = filter.GenreIds.ToList();
+                filterExpression = filterExpression.And(book => book.BookGenres.Any(bg => genreIds.Contains((long)bg.GenreId)));
             }
             return filterExpression;
         }

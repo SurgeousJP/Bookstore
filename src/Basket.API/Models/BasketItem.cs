@@ -10,5 +10,6 @@
         public decimal TotalUnitPrice { get; set; }
         public int Quantity { get; set; }
         public string ImageUrl { get; set; } = null!;
+        public bool Selected { get; set; }
     }
 }

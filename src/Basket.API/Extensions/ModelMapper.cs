@@ -24,6 +24,7 @@ namespace Basket.API.Extensions
                     OldUnitPrice = (decimal)item.OldUnitPrice,
                     Quantity = item.Quantity,
                     ImageUrl = item.ImageUrl,
+                    Selected = item.Selected
                 });
             }
 
