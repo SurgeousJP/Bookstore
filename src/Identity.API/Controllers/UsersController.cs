@@ -1,4 +1,5 @@
-﻿using Identity.API.Models;
+﻿using Hangfire;
+using Identity.API.Models;
 using Identity.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,13 +45,18 @@ namespace Identity.API.Controllers
                 return BadRequest("The email input is not matched with any of users");
             }
 
-            var message = new Message(new string[]
-            { email },
-            "Password recovery mail",
-            "Dear [User],\r\nIt seems you've requested assistance in resetting your password. We're here to help you securely regain access to your account.." +
-            $"\r\n Here is your token for reset your password: {resetPassToken}");
+            string subject = "Password Recovery Email";
 
-            await emailSender.SendEmailAsync(message);
+            string htmlBody = @"<h1 style='color: #1A56DB;'>Welcome to Our Service!</h1>
+            <p>Dear User,</p>
+            <p>It seems you've requested assistance in resetting your password. We're here to help you securely regain access to your account.</p>
+            <p>Here is your token for reset your password</p>
+            <p>If you have any questions, feel free to reply to this email.</p>
+            <p>Best regards,<br>Aoitome</p>";
+
+            var message = new Message(email, subject, htmlBody);
+
+            BackgroundJob.Enqueue<EmailSender>(e => e.SendEmailAsync(message));
 
             return Ok("A token is generated and has been sent to your email, please check your inbox for password recovery token");
         }

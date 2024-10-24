@@ -1,3 +1,4 @@
+using Hangfire;
 using Identity.API.Data;
 using Identity.API.Extensions;
 using Identity.API.Models;
@@ -47,6 +48,13 @@ builder.Services.AddTransient<ILoginService<ApplicationUser>, LoginService>();
 builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddEndpointsApiExplorer();
 
+// Configure Hangfire with SQL Server for production
+builder.Services.AddHangfire(configuration => configuration
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseInMemoryStorage());
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
 
 app.MapAPI_File();
@@ -60,7 +68,9 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseHangfireDashboard();
 app.MapControllers();
+app.MapHangfireDashboard();
 app.MapRazorPages();
 app.UseAuthentication();
 app.UseAuthorization();

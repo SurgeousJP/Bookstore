@@ -4,6 +4,7 @@ using MimeKit;
 
 namespace Identity.API.Services
 {
+
     public class EmailSender : IEmailSender
     {
         private readonly EmailConfiguration _emailConfig;
@@ -20,13 +21,23 @@ namespace Identity.API.Services
             Send(emailMessage);
         }
 
+        public List<MailboxAddress> GetMailboxAddresses(List<string> To)
+        {
+            return To.Select(email => MailboxAddress.Parse(email)).ToList();
+        }
+
         private MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
-            emailMessage.To.AddRange(message.To);
+
+            // emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
+            emailMessage.From.Add(MailboxAddress.Parse($"Aoitome <${_emailConfig.From}>"));
+            emailMessage.To.Add(MailboxAddress.Parse(message.To));
             emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = message.Content
+            };
 
             return emailMessage;
         }
@@ -89,3 +100,4 @@ namespace Identity.API.Services
         }
     }
 }
+
