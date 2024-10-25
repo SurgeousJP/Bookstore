@@ -17,6 +17,7 @@ namespace Basket.API.Extensions
     {
         public static void AddApplicationServices(this IHostApplicationBuilder builder)
         {
+            builder.Configuration.AddEnvironmentVariables();
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddJwtAuthentication(builder.Configuration);
             builder.Services.AddSwaggerGen(c =>
@@ -48,7 +49,7 @@ namespace Basket.API.Extensions
             var redisConfig = new ConfigurationOptions
             {
                 EndPoints = { builder.Configuration["ConnectionStrings:Basket"] },
-                Password = builder.Configuration["ConnectionStrings:Password"],
+                Password = builder.Configuration["ConnectionStrings:BasketPassword"],
                 AbortOnConnectFail = false,
                 ConnectRetry = 10,  // Retries before giving up
                 ConnectTimeout = 20000  // Timeout in milliseconds

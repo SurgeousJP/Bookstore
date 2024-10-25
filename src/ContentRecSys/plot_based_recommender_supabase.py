@@ -11,13 +11,14 @@ import json
 from waitress import serve
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+import os
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
 
 # Your Supabase project details
-URL = "https://oflclzbsbgkadqiagxqk.supabase.co"  # Supabase project URL
-KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mbGNsemJzYmdrYWRxaWFneHFrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY0OTY3OTIsImV4cCI6MjAyMjA3Mjc5Mn0.2IGuSFqHbNp75vs-LskGjK0fw3ypqbiHJ9MKAAaYE8s"                    # Supabase API key
+URL = os.getenv('REC_SYS_SUPABASE_HOST')  # Supabase project URL
+KEY = os.getenv('REC_SYS_SUPABASE_API_KEY') # Supabase API key
 supabase: Client = create_client(URL, KEY)
 
 def convert_table_to_pandas_dataframe(supabase, table_name):

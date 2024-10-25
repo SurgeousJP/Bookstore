@@ -14,6 +14,17 @@ services:
     container_name: identity.api
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
+        - ConnectionStrings__IdentityConnection=${IDENTITY_DB_CONNECTION_STRING}
+        - CLOUDINARY_URL=${CLOUDINARY_URL}
+        - Cloudinary__CloudName=${CLOUDINARY_CLOUDNAME}
+        - Cloudinary__ApiKey=${CLOUDINARY_APIKEY}
+        - Cloudinary__ApiSecret=${CLOUDINARY_SECRET}
+        - jwt__secret=${JWT_SECRET}
+        - EmailConfiguration__From=${EMAIL_SENDER}
+        - EmailConfiguration__Username=${EMAIL_SENDER}
+        - EmailConfiguration__Password=${SMTP_PASSWORD}
+    env_file:
+        - .env
     networks:
         - backend
 
@@ -30,6 +41,10 @@ services:
         - rabbitmq 
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
+        - ConnectionStrings__BookCatalog=${CATALOG_DB_CONNECTION_STRING}
+        - jwt__secret=${JWT_SECRET}
+    env_file:
+        - .env
     networks:
         - backend
 
@@ -46,8 +61,34 @@ services:
         - rabbitmq
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
+        - ConnectionStrings__Basket=${BASKET_CONNECTION_STRING}
+        - ConnectionStrings__BasketPassword=${BASKET_CONNECTION_PASSWORD}
+        - jwt__secret=${JWT_SECRET}
+    env_file:
+        - .env
     networks:
         - backend
+
+  ordering.api:
+    image: ${DOCKER_REGISTRY-}orderingapi
+    container_name: ordering.api
+    ports:
+        - 5005:8080
+    build:
+        context: ..
+        dockerfile: src/Ordering.API/Dockerfile
+    environment:
+        - ConnectionStrings__Ordering=${ORDER_CONNECTION_STRING}
+        - jwt__secret=${JWT_SECRET}
+        - StripeSettings__StripeAPIKey=${STRIPE_API_KEY}
+        - StripeSettings__WebhookSecretKey=${WEBHOOK_SECRET_KEY}
+    env_file:
+        - .env
+    networks:
+        - backend
+    depends_on:
+        - rabbitmq
+        - identity.api
 
   apigateway:
     image: ${DOCKER_REGISTRY-}apigateway
@@ -68,6 +109,8 @@ services:
     build:
       context: ..\src\ContentRecSys
       dockerfile: Dockerfile
+    env_file:
+      - .env
     networks:
         - backend
 
@@ -97,17 +140,5 @@ services:
     ports:
         - 5006:8080
 
-  ordering.api:
-    image: ${DOCKER_REGISTRY-}orderingapi
-    container_name: ordering.api
-    ports:
-        - 5005:8080
-    build:
-      context: ..
-      dockerfile: src/Ordering.API/Dockerfile
-    networks:
-        - backend
-    depends_on:
-        - rabbitmq
-        - identity.api
+
   

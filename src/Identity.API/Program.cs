@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
-
+builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddJwt(configuration);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerGen();

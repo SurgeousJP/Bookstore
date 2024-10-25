@@ -81,6 +81,7 @@ namespace Ordering.API.Extensions
 
         public static void AddApplicationServices(this IHostApplicationBuilder builder)
         {
+            builder.Configuration.AddEnvironmentVariables();
             // Add services to the container.
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddControllers();
