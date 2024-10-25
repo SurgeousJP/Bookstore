@@ -12,7 +12,7 @@ builder.Services
         options.AddPolicy("CorsPolicy", policy =>
         {
             policy
-                .WithOrigins("http://localhost:3000")
+                .WithOrigins("https://localhost:3000")
                 .AllowAnyMethod()
                 .AllowCredentials()
                 .AllowAnyHeader()

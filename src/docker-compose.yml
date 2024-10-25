@@ -95,12 +95,20 @@ services:
     container_name: apigateway
     ports:
         - 6001:8080
+        - 6002:8081
     build:
       context: ..
       dockerfile: src/APIGateway/Dockerfile
     networks:
         - backend
-
+    volumes:
+        - ~/.aspnet/https:/https:ro
+    environment:
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Aoitome@123
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aoitome.pfx 
   contentrecsys:
     image: ${DOCKER_REGISTRY-}contentrecsys
     container_name: contentrecsys
