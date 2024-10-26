@@ -1,6 +1,6 @@
 version: 1
 services:
-  identity-api:
+  identityapi:
     type: web
     env: docker
     plan: free
@@ -21,7 +21,7 @@ services:
       EmailConfiguration__Username: ${EMAIL_SENDER}
       EmailConfiguration__Password: ${SMTP_PASSWORD}
 
-  bookcatalog-api:
+  bookcatalogapi:
     type: web
     env: docker
     plan: free
@@ -35,7 +35,7 @@ services:
       ConnectionStrings__BookCatalog: ${CATALOG_DB_CONNECTION_STRING}
       jwt__secret: ${JWT_SECRET}
 
-  basket-api:
+  basketapi:
     type: web
     env: docker
     plan: free
@@ -50,7 +50,7 @@ services:
       ConnectionStrings__BasketPassword: ${BASKET_CONNECTION_PASSWORD}
       jwt__secret: ${JWT_SECRET}
 
-  ordering-api:
+  orderingapi:
     type: web
     env: docker
     plan: free
@@ -65,7 +65,7 @@ services:
       StripeSettings__StripeAPIKey: ${STRIPE_API_KEY}
       StripeSettings__WebhookSecretKey: ${WEBHOOK_SECRET_KEY}
 
-  api-gateway:
+  apigateway:
     type: web
     env: docker
     plan: free
