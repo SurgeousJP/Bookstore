@@ -1,133 +1,109 @@
+version: 1
 services:
-  - name: identity-api
+  identity-api:
     type: web
     env: docker
-    plan: starter
-    dockerfilePath: Identity.API/Dockerfile
+    plan: free
+    docker:
+      dockerfilePath: Identity.API/Dockerfile
+      context: .
+    buildCommand: echo "Building Identity API..."
+    startCommand: dotnet Identity.API.dll
     envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Development
-      - key: ConnectionStrings__IdentityConnection
-        fromSecret: IDENTITY_DB_CONNECTION_STRING
-      - key: CLOUDINARY_URL
-        fromSecret: CLOUDINARY_URL
-      - key: Cloudinary__CloudName
-        fromSecret: CLOUDINARY_CLOUDNAME
-      - key: Cloudinary__ApiKey
-        fromSecret: CLOUDINARY_APIKEY
-      - key: Cloudinary__ApiSecret
-        fromSecret: CLOUDINARY_SECRET
-      - key: jwt__secret
-        fromSecret: JWT_SECRET
-      - key: EmailConfiguration__From
-        fromSecret: EMAIL_SENDER
-      - key: EmailConfiguration__Username
-        fromSecret: EMAIL_SENDER
-      - key: EmailConfiguration__Password
-        fromSecret: SMTP_PASSWORD
-    autoDeploy: true
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__IdentityConnection: ${IDENTITY_DB_CONNECTION_STRING}
+      CLOUDINARY_URL: ${CLOUDINARY_URL}
+      Cloudinary__CloudName: ${CLOUDINARY_CLOUDNAME}
+      Cloudinary__ApiKey: ${CLOUDINARY_APIKEY}
+      Cloudinary__ApiSecret: ${CLOUDINARY_SECRET}
+      jwt__secret: ${JWT_SECRET}
+      EmailConfiguration__From: ${EMAIL_SENDER}
+      EmailConfiguration__Username: ${EMAIL_SENDER}
+      EmailConfiguration__Password: ${SMTP_PASSWORD}
 
-  - name: bookcatalog-api
+  bookcatalog-api:
     type: web
     env: docker
-    plan: starter
-    dockerfilePath: BookCatalog.API/Dockerfile
+    plan: free
+    docker:
+      dockerfilePath: BookCatalog.API/Dockerfile
+      context: .
+    buildCommand: echo "Building Book Catalog API..."
+    startCommand: dotnet BookCatalog.API.dll
     envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Development
-      - key: ConnectionStrings__BookCatalog
-        fromSecret: CATALOG_DB_CONNECTION_STRING
-      - key: jwt__secret
-        fromSecret: JWT_SECRET
-    autoDeploy: true
-    dependsOn:
-      - identity-api
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__BookCatalog: ${CATALOG_DB_CONNECTION_STRING}
+      jwt__secret: ${JWT_SECRET}
 
-  - name: basket-api
+  basket-api:
     type: web
     env: docker
-    plan: starter
-    dockerfilePath: Basket.API/Dockerfile
+    plan: free
+    docker:
+      dockerfilePath: Basket.API/Dockerfile
+      context: .
+    buildCommand: echo "Building Basket API..."
+    startCommand: dotnet Basket.API.dll
     envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Development
-      - key: ConnectionStrings__Basket
-        fromSecret: BASKET_CONNECTION_STRING
-      - key: ConnectionStrings__BasketPassword
-        fromSecret: BASKET_CONNECTION_PASSWORD
-      - key: jwt__secret
-        fromSecret: JWT_SECRET
-    autoDeploy: true
-    dependsOn:
-      - identity-api
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Basket: ${BASKET_CONNECTION_STRING}
+      ConnectionStrings__BasketPassword: ${BASKET_CONNECTION_PASSWORD}
+      jwt__secret: ${JWT_SECRET}
 
-  - name: ordering-api
+  ordering-api:
     type: web
     env: docker
-    plan: starter
-    dockerfilePath: src/Ordering.API/Dockerfile
+    plan: free
+    docker:
+      dockerfilePath: src/Ordering.API/Dockerfile
+      context: ..
+    buildCommand: echo "Building Ordering API..."
+    startCommand: dotnet Ordering.API.dll
     envVars:
-      - key: ConnectionStrings__Ordering
-        fromSecret: ORDER_CONNECTION_STRING
-      - key: jwt__secret
-        fromSecret: JWT_SECRET
-      - key: StripeSettings__StripeAPIKey
-        fromSecret: STRIPE_API_KEY
-      - key: StripeSettings__WebhookSecretKey
-        fromSecret: WEBHOOK_SECRET_KEY
-    autoDeploy: true
-    dependsOn:
-      - identity-api
+      ConnectionStrings__Ordering: ${ORDER_CONNECTION_STRING}
+      jwt__secret: ${JWT_SECRET}
+      StripeSettings__StripeAPIKey: ${STRIPE_API_KEY}
+      StripeSettings__WebhookSecretKey: ${WEBHOOK_SECRET_KEY}
 
-  - name: apigateway
+  api-gateway:
     type: web
     env: docker
-    plan: starter
-    dockerfilePath: src/APIGateway/Dockerfile
+    plan: free
+    docker:
+      dockerfilePath: src/APIGateway/Dockerfile
+      context: ..
+    buildCommand: echo "Building API Gateway..."
+    startCommand: dotnet APIGateway.dll
     envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Development
-      - key: ASPNETCORE_URLS
-        value: "https://+:8081;http://+:8080"
-      - key: ASPNETCORE_Kestrel__Certificates__Default__Password
-        value: Aoitome@123
-      - key: ASPNETCORE_Kestrel__Certificates__Default__Path
-        value: /https/aoitome.pfx
-      - key: PORT
-        value: 8080  # or 8081 for HTTPS
-    autoDeploy: true
-    mounts:
-      - path: /https
-        volumeName: https-volume
+      ASPNETCORE_HTTPS_PORTS: 8081
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:8081;http://+:8080
+      ASPNETCORE_Kestrel__Certificates__Default__Password: Aoitome@123
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aoitome.pfx
 
-  # - name: content-recsys
+  # content-recommendation-system:
   #   type: web
   #   env: docker
-  #   plan: starter
-  #   dockerfilePath: src/ContentRecSys/Dockerfile
-  #   envVars:
-  #     - key: ASPNETCORE_ENVIRONMENT
-  #       value: Development
-  #   autoDeploy: true
+  #   plan: free
+  #   docker:
+  #     dockerfilePath: Dockerfile
+  #     context: ../src/ContentRecSys
+  #   buildCommand: echo "Building Content Recommendation System..."
+  #   startCommand: dotnet ContentRecSys.dll
 
-  - name: rabbitmq
-    type: web  # Change to web; restrict access if needed
-    env: docker
-    plan: starter
-    dockerfilePath: Dockerfile
-    image: rabbitmq:3-management-alpine
-    autoDeploy: true
+  rabbitmq:
+    type: redis
+    plan: free
+    docker:
+      image: rabbitmq:3-management-alpine
 
-  - name: stripe
-    type: web  # Change to web; restrict access if needed
+  stripe:
+    type: cron
     env: docker
-    plan: starter
-    dockerfilePath: Dockerfile
-    image: stripe/stripe-cli:latest
+    plan: free
+    docker:
+      image: stripe/stripe-cli:latest
     command: "listen --api-key ${STRIPE_API_KEY} --device-name ${STRIPE_DEVICE_NAME} --forward-to ordering-api:8080/api/v1/payment-webhook"
     envVars:
-      - key: STRIPE_API_KEY
-        fromSecret: STRIPE_API_KEY
-      - key: STRIPE_DEVICE_NAME
-        fromSecret: STRIPE_DEVICE_NAME
-    autoDeploy: true
+      STRIPE_API_KEY: ${STRIPE_API_KEY}
+      STRIPE_DEVICE_NAME: ${STRIPE_DEVICE_NAME}
