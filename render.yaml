@@ -42,7 +42,6 @@ services:
     autoDeploy: true
     dependsOn:
       - identity-api
-      - rabbitmq
 
   - name: basket-api
     type: web
@@ -61,7 +60,6 @@ services:
     autoDeploy: true
     dependsOn:
       - identity-api
-      - rabbitmq
 
   - name: ordering-api
     type: web
@@ -79,7 +77,6 @@ services:
         fromSecret: WEBHOOK_SECRET_KEY
     autoDeploy: true
     dependsOn:
-      - rabbitmq
       - identity-api
 
   - name: apigateway
@@ -88,8 +85,6 @@ services:
     plan: starter
     dockerfilePath: src/APIGateway/Dockerfile
     envVars:
-      - key: ASPNETCORE_HTTPS_PORTS
-        value: 8081
       - key: ASPNETCORE_ENVIRONMENT
         value: Development
       - key: ASPNETCORE_URLS
@@ -98,6 +93,8 @@ services:
         value: Aoitome@123
       - key: ASPNETCORE_Kestrel__Certificates__Default__Path
         value: /https/aoitome.pfx
+      - key: PORT
+        value: 8080  # or 8081 for HTTPS
     autoDeploy: true
     mounts:
       - path: /https
@@ -114,7 +111,7 @@ services:
   #   autoDeploy: true
 
   - name: rabbitmq
-    type: private
+    type: web  # Change to web; restrict access if needed
     env: docker
     plan: starter
     dockerfilePath: Dockerfile
@@ -122,7 +119,7 @@ services:
     autoDeploy: true
 
   - name: stripe
-    type: private
+    type: web  # Change to web; restrict access if needed
     env: docker
     plan: starter
     dockerfilePath: Dockerfile
