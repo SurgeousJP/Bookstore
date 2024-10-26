@@ -1,0 +1,154 @@
+services:
+  - name: identity-api
+    type: web
+    env: docker
+    plan: starter
+    dockerfilePath: Identity.API/Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Development
+      - key: ConnectionStrings__IdentityConnection
+        fromSecret: IDENTITY_DB_CONNECTION_STRING
+      - key: CLOUDINARY_URL
+        fromSecret: CLOUDINARY_URL
+      - key: Cloudinary__CloudName
+        fromSecret: CLOUDINARY_CLOUDNAME
+      - key: Cloudinary__ApiKey
+        fromSecret: CLOUDINARY_APIKEY
+      - key: Cloudinary__ApiSecret
+        fromSecret: CLOUDINARY_SECRET
+      - key: jwt__secret
+        fromSecret: JWT_SECRET
+      - key: EmailConfiguration__From
+        fromSecret: EMAIL_SENDER
+      - key: EmailConfiguration__Username
+        fromSecret: EMAIL_SENDER
+      - key: EmailConfiguration__Password
+        fromSecret: SMTP_PASSWORD
+    autoDeploy: true
+    ports:
+      - 5001
+
+  - name: bookcatalog-api
+    type: web
+    env: docker
+    plan: starter
+    dockerfilePath: BookCatalog.API/Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Development
+      - key: ConnectionStrings__BookCatalog
+        fromSecret: CATALOG_DB_CONNECTION_STRING
+      - key: jwt__secret
+        fromSecret: JWT_SECRET
+    autoDeploy: true
+    ports:
+      - 5002
+    dependsOn:
+      - identity-api
+      - rabbitmq
+
+  - name: basket-api
+    type: web
+    env: docker
+    plan: starter
+    dockerfilePath: Basket.API/Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Development
+      - key: ConnectionStrings__Basket
+        fromSecret: BASKET_CONNECTION_STRING
+      - key: ConnectionStrings__BasketPassword
+        fromSecret: BASKET_CONNECTION_PASSWORD
+      - key: jwt__secret
+        fromSecret: JWT_SECRET
+    autoDeploy: true
+    ports:
+      - 5003
+    dependsOn:
+      - identity-api
+      - rabbitmq
+
+  - name: ordering-api
+    type: web
+    env: docker
+    plan: starter
+    dockerfilePath: src/Ordering.API/Dockerfile
+    envVars:
+      - key: ConnectionStrings__Ordering
+        fromSecret: ORDER_CONNECTION_STRING
+      - key: jwt__secret
+        fromSecret: JWT_SECRET
+      - key: StripeSettings__StripeAPIKey
+        fromSecret: STRIPE_API_KEY
+      - key: StripeSettings__WebhookSecretKey
+        fromSecret: WEBHOOK_SECRET_KEY
+    autoDeploy: true
+    ports:
+      - 5005
+    dependsOn:
+      - rabbitmq
+      - identity-api
+
+  - name: apigateway
+    type: web
+    env: docker
+    plan: starter
+    dockerfilePath: src/APIGateway/Dockerfile
+    envVars:
+      - key: ASPNETCORE_HTTPS_PORTS
+        value: 8081
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Development
+      - key: ASPNETCORE_URLS
+        value: "https://+:8081;http://+:8080"
+      - key: ASPNETCORE_Kestrel__Certificates__Default__Password
+        value: Aoitome@123
+      - key: ASPNETCORE_Kestrel__Certificates__Default__Path
+        value: /https/aoitome.pfx
+    autoDeploy: true
+    ports:
+      - 6001
+      - 6002
+    mounts:
+      - path: /https
+        volumeName: https-volume
+
+  # - name: content-recsys
+  #   type: web
+  #   env: docker
+  #   plan: starter
+  #   dockerfilePath: src/ContentRecSys/Dockerfile
+  #   envVars:
+  #     - key: ASPNETCORE_ENVIRONMENT
+  #       value: Development
+  #   autoDeploy: true
+  #   ports:
+  #     - 5004
+
+  - name: rabbitmq
+    type: web
+    env: docker
+    plan: starter
+    dockerfilePath: "Dockerfile"
+    image: "rabbitmq:3-management-alpine"
+    autoDeploy: true
+    ports:
+      - 5672
+      - 15672
+
+  - name: stripe
+    type: web
+    env: docker
+    plan: starter
+    dockerfilePath: Dockerfile
+    image: stripe/stripe-cli:latest
+    command: "listen --api-key ${STRIPE_API_KEY} --device-name ${STRIPE_DEVICE_NAME} --forward-to ordering-api:8080/api/v1/payment-webhook"
+    envVars:
+      - key: STRIPE_API_KEY
+        fromSecret: STRIPE_API_KEY
+      - key: STRIPE_DEVICE_NAME
+        fromSecret: STRIPE_DEVICE_NAME
+    autoDeploy: true
+    ports:
+      - 5006
