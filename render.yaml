@@ -26,8 +26,6 @@ services:
       - key: EmailConfiguration__Password
         fromSecret: SMTP_PASSWORD
     autoDeploy: true
-    ports:
-      - 5001
 
   - name: bookcatalog-api
     type: web
@@ -42,8 +40,6 @@ services:
       - key: jwt__secret
         fromSecret: JWT_SECRET
     autoDeploy: true
-    ports:
-      - 5002
     dependsOn:
       - identity-api
       - rabbitmq
@@ -63,8 +59,6 @@ services:
       - key: jwt__secret
         fromSecret: JWT_SECRET
     autoDeploy: true
-    ports:
-      - 5003
     dependsOn:
       - identity-api
       - rabbitmq
@@ -84,8 +78,6 @@ services:
       - key: StripeSettings__WebhookSecretKey
         fromSecret: WEBHOOK_SECRET_KEY
     autoDeploy: true
-    ports:
-      - 5005
     dependsOn:
       - rabbitmq
       - identity-api
@@ -107,9 +99,6 @@ services:
       - key: ASPNETCORE_Kestrel__Certificates__Default__Path
         value: /https/aoitome.pfx
     autoDeploy: true
-    ports:
-      - 6001
-      - 6002
     mounts:
       - path: /https
         volumeName: https-volume
@@ -123,22 +112,17 @@ services:
   #     - key: ASPNETCORE_ENVIRONMENT
   #       value: Development
   #   autoDeploy: true
-  #   ports:
-  #     - 5004
 
   - name: rabbitmq
-    type: web
+    type: private
     env: docker
     plan: starter
-    dockerfilePath: "Dockerfile"
-    image: "rabbitmq:3-management-alpine"
+    dockerfilePath: Dockerfile
+    image: rabbitmq:3-management-alpine
     autoDeploy: true
-    ports:
-      - 5672
-      - 15672
 
   - name: stripe
-    type: web
+    type: private
     env: docker
     plan: starter
     dockerfilePath: Dockerfile
@@ -150,5 +134,3 @@ services:
       - key: STRIPE_DEVICE_NAME
         fromSecret: STRIPE_DEVICE_NAME
     autoDeploy: true
-    ports:
-      - 5006
