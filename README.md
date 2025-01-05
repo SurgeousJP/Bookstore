@@ -24,7 +24,7 @@ STRIPE_API_KEY=
 WEBHOOK_SECRET_KEY=
 
 
-![Swagger Backend](Swagger.png)
+![Swagger Backend](https://github.com/user-attachments/assets/a7d115b1-e49c-4c45-b325-1ce645f2b5ba)
 
 ### To view the repo containing the frontend of this project, please follow this [link](https://github.com/4nh3k/BookStoreFE).
 
