@@ -1,7 +1,7 @@
 # Bookstore Backend Microservice
 
 # Note
-This project require an env store in the project src file to work like this:
+This project require a .env file store in the project src folder to work like this:
 
 CLOUDINARY_URL=
 
